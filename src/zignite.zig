@@ -11,6 +11,7 @@ const _Range = @import("./producer/range.zig").Range;
 const _Repeat = @import("./producer/repeat.zig").Repeat;
 
 const _Fuse = @import("./producer/fuse.zig").Fuse;
+const _Filter = @import("./prosumer/filter.zig").Filter;
 const _Take = @import("./prosumer/take.zig").Take;
 
 const _Bomb = @import("./hermit/bomb.zig").Bomb;
@@ -69,12 +70,22 @@ pub fn Zignite(comptime Producer: type) type {
         const next = Producer.next;
         const deinit = Producer.deinit;
 
+        const Predicate = fn (value: Out) bool;
+
         pub fn Fuse(comptime T: type) type {
             return Zignite(_Fuse(State, Out, next, deinit, T.Type.State, T.Type.Out, T.next, T.deinit));
         }
 
         pub inline fn fuse(self: Self, prosumer: anytype) Fuse(@TypeOf(prosumer)) {
             return .{ .producer = Fuse(@TypeOf(prosumer)).Producer.init(self.producer, prosumer) };
+        }
+
+        pub fn Filter(comptime predicate: Predicate) type {
+            return Fuse(_Filter(Out, predicate));
+        }
+
+        pub inline fn filter(self: Self, comptime predicate: Predicate) Filter(predicate) {
+            return self.fuse(_Filter(Out, predicate).init);
         }
 
         pub fn Take() type {
