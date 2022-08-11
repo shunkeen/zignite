@@ -4,7 +4,7 @@ const ConsumerType = @import("consumer_type.zig").ConsumerType;
 
 test "to_slice:" {
     var buffer1: [10]i32 = undefined;
-    const b1 = zignite.fromSlice(i32, &[_]i32{ 1, 2, 3 }).toSlice(&buffer1).?;
+    const b1 = zignite.range(i32, 1, 3).toSlice(&buffer1).?;
     try expect(b1[0] == 1);
     try expect(b1[1] == 2);
     try expect(b1[2] == 3);
@@ -14,7 +14,7 @@ test "to_slice:" {
     try expect(zignite.empty(i32).toSlice(&buffer2).?.len == 0);
 
     var buffer3: [10]i32 = undefined;
-    try expect(zignite.fromSlice(i32, &[_]i32{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }).toSlice(&buffer3) == null);
+    try expect(zignite.range(i32, 1, 11).toSlice(&buffer3) == null);
 }
 
 pub fn ToSlice(comptime T: type) type {

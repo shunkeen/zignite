@@ -7,6 +7,7 @@ test "reference all declarations" {
 const _FromSlice = @import("./producer/from_slice.zig").FromSlice;
 const _Empty = @import("./producer/empty.zig").Empty;
 const _Once = @import("./producer/once.zig").Once;
+const _Range = @import("./producer/range.zig").Range;
 
 const _Bomb = @import("./hermit/bomb.zig").Bomb;
 const _IsEmpty = @import("./consumer/is_empty.zig").IsEmpty;
@@ -34,6 +35,14 @@ pub fn Once(comptime T: type) type {
 
 pub inline fn once(comptime T: type, value: T) Once(T) {
     return .{ .producer = _Once(T).init(value) };
+}
+
+pub fn Range(comptime T: type) type {
+    return Zignite(_Range(T));
+}
+
+pub inline fn range(comptime T: type, start: T, count: usize) Range(T) {
+    return .{ .producer = _Range(T).init(start, count) };
 }
 
 pub fn Zignite(comptime Producer: type) type {

@@ -4,10 +4,10 @@ const ConsumerType = @import("consumer_type.zig").ConsumerType;
 
 test "is_epmty:" {
     try expect(zignite.empty(i32).isEmpty());
-    try expect(zignite.fromSlice(i32, &[_]i32{}).isEmpty());
+    try expect(zignite.range(i32, 0, 0).isEmpty());
 
     try expect(!zignite.once(i32, 1).isEmpty());
-    try expect(!zignite.fromSlice(i32, &[_]i32{ 0, 1 }).isEmpty());
+    try expect(!zignite.range(i32, 0, 2).isEmpty());
 }
 
 pub fn IsEmpty(comptime T: type) type {
