@@ -16,6 +16,7 @@ const _FlatMap = @import("./prosumer/flat_map.zig").FlatMap;
 const _Take = @import("./prosumer/take.zig").Take;
 
 const _Bomb = @import("./hermit/bomb.zig").Bomb;
+const _Fold = @import("./consumer/fold.zig").Fold;
 const _IsEmpty = @import("./consumer/is_empty.zig").IsEmpty;
 const _ToSlice = @import("./consumer/to_slice.zig").ToSlice;
 
@@ -77,6 +78,10 @@ pub fn Zignite(comptime Producer: type) type {
             return fn (value: Out) T;
         }
 
+        fn Reducer(comptime T: type) type {
+            return fn (accumulator: T, value: Out) T;
+        }
+
         pub fn Fuse(comptime T: type) type {
             return Zignite(_Fuse(State, Out, next, deinit, T.Type.State, T.Type.Out, T.next, T.deinit));
         }
@@ -121,6 +126,10 @@ pub fn Zignite(comptime Producer: type) type {
             const Cs = @TypeOf(consumer);
             const Hm = _Bomb(State, Out, next, deinit, Cs.Type.State, Cs.Type.Out, Cs.next, Cs.deinit);
             return Hm.run(self.producer, consumer);
+        }
+
+        pub inline fn fold(self: Self, comptime T: type, init: T, comptime reducer: Reducer(T)) T {
+            return self.bomb(_Fold(T, Out, reducer).init(init));
         }
 
         pub inline fn isEmpty(self: Self) bool {
