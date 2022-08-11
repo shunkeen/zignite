@@ -12,6 +12,7 @@ const _Repeat = @import("./producer/repeat.zig").Repeat;
 
 const _Fuse = @import("./producer/fuse.zig").Fuse;
 const _Filter = @import("./prosumer/filter.zig").Filter;
+const _FlatMap = @import("./prosumer/flat_map.zig").FlatMap;
 const _Take = @import("./prosumer/take.zig").Take;
 
 const _Bomb = @import("./hermit/bomb.zig").Bomb;
@@ -72,6 +73,10 @@ pub fn Zignite(comptime Producer: type) type {
 
         const Predicate = fn (value: Out) bool;
 
+        fn Transformer(comptime T: type) type {
+            return fn (value: Out) T;
+        }
+
         pub fn Fuse(comptime T: type) type {
             return Zignite(_Fuse(State, Out, next, deinit, T.Type.State, T.Type.Out, T.next, T.deinit));
         }
@@ -86,6 +91,22 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn filter(self: Self, comptime predicate: Predicate) Filter(predicate) {
             return self.fuse(_Filter(Out, predicate).init);
+        }
+
+        pub fn FlatMap(comptime T: type, comptime transformer: Transformer(T)) type {
+            return Fuse(RawFlatMap(T, transformer));
+        }
+
+        fn RawFlatMap(comptime T: type, comptime transformer: Transformer(T)) type {
+            return _FlatMap(Out, T.Producer.Type.State, T.Producer.Type.Out, T.Producer.next, T.Producer.deinit, struct {
+                fn run(value: Out) T.Producer {
+                    return @call(.{ .modifier = .always_inline }, transformer, .{value}).producer;
+                }
+            }.run);
+        }
+
+        pub inline fn flatMap(self: Self, comptime T: type, comptime transformer: Transformer(T)) FlatMap(T, transformer) {
+            return self.fuse(RawFlatMap(T, transformer).init);
         }
 
         pub fn Take() type {
