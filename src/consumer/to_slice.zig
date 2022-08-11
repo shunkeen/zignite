@@ -11,7 +11,7 @@ test "to_slice:" {
     try expect(b1.len == 3);
 
     var buffer2: [10]i32 = undefined;
-    try expect(zignite.fromSlice(i32, &[_]i32{}).toSlice(&buffer2).?.len == 0);
+    try expect(zignite.empty(i32).toSlice(&buffer2).?.len == 0);
 
     var buffer3: [10]i32 = undefined;
     try expect(zignite.fromSlice(i32, &[_]i32{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }).toSlice(&buffer3) == null);

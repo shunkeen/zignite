@@ -17,8 +17,7 @@ test "from_slice:" {
     try expect(b2[2] == 'E');
     try expect(b2.len == 3);
 
-    var buffer3: [10]u8 = undefined;
-    try expect(zignite.fromSlice(u8, "").toSlice(&buffer3).?.len == 0);
+    try expect(zignite.fromSlice(u8, "").isEmpty());
 }
 
 pub fn FromSlice(comptime T: type) type {
