@@ -6,7 +6,7 @@ test "is_epmty:" {
     try expect(zignite.empty(i32).isEmpty());
     try expect(zignite.fromSlice(i32, &[_]i32{}).isEmpty());
 
-    try expect(!zignite.fromSlice(i32, &[_]i32{1}).isEmpty());
+    try expect(!zignite.once(i32, 1).isEmpty());
     try expect(!zignite.fromSlice(i32, &[_]i32{ 0, 1 }).isEmpty());
 }
 

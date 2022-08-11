@@ -6,6 +6,7 @@ test "reference all declarations" {
 
 const _FromSlice = @import("./producer/from_slice.zig").FromSlice;
 const _Empty = @import("./producer/empty.zig").Empty;
+const _Once = @import("./producer/once.zig").Once;
 
 const _Bomb = @import("./hermit/bomb.zig").Bomb;
 const _IsEmpty = @import("./consumer/is_empty.zig").IsEmpty;
@@ -25,6 +26,14 @@ pub fn FromSlice(comptime T: type) type {
 
 pub inline fn fromSlice(comptime T: type, slice: []const T) FromSlice(T) {
     return .{ .producer = _FromSlice(T).init(slice) };
+}
+
+pub fn Once(comptime T: type) type {
+    return Zignite(_Once(T));
+}
+
+pub inline fn once(comptime T: type, value: T) Once(T) {
+    return .{ .producer = _Once(T).init(value) };
 }
 
 pub fn Zignite(comptime Producer: type) type {
