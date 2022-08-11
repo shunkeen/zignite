@@ -8,6 +8,7 @@ const _FromSlice = @import("./producer/from_slice.zig").FromSlice;
 const _Empty = @import("./producer/empty.zig").Empty;
 const _Once = @import("./producer/once.zig").Once;
 const _Range = @import("./producer/range.zig").Range;
+const _Repeat = @import("./producer/repeat.zig").Repeat;
 
 const _Fuse = @import("./producer/fuse.zig").Fuse;
 const _Take = @import("./prosumer/take.zig").Take;
@@ -46,6 +47,14 @@ pub fn Range(comptime T: type) type {
 
 pub inline fn range(comptime T: type, start: T, count: usize) Range(T) {
     return .{ .producer = _Range(T).init(start, count) };
+}
+
+pub fn Repeat(comptime T: type) type {
+    return Zignite(_Repeat(T));
+}
+
+pub inline fn repeat(comptime T: type, value: T) Repeat(T) {
+    return .{ .producer = _Repeat(T).init(value) };
 }
 
 pub fn Zignite(comptime Producer: type) type {
