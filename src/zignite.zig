@@ -18,6 +18,7 @@ const _Take = @import("./prosumer/take.zig").Take;
 const _Bomb = @import("./hermit/bomb.zig").Bomb;
 const _Fold = @import("./consumer/fold.zig").Fold;
 const _IsEmpty = @import("./consumer/is_empty.zig").IsEmpty;
+const _Sum = @import("./consumer/sum.zig").Sum;
 const _ToSlice = @import("./consumer/to_slice.zig").ToSlice;
 
 pub fn Empty(comptime T: type) type {
@@ -134,6 +135,10 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn isEmpty(self: Self) bool {
             return self.bomb(_IsEmpty(Out).init);
+        }
+
+        pub inline fn sum(self: Self) Out {
+            return self.bomb(_Sum(Out).init);
         }
 
         pub inline fn toSlice(self: Self, buffer: []Out) ?[]const Out {
