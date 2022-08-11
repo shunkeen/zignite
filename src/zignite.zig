@@ -9,6 +9,9 @@ const _Empty = @import("./producer/empty.zig").Empty;
 const _Once = @import("./producer/once.zig").Once;
 const _Range = @import("./producer/range.zig").Range;
 
+const _Fuse = @import("./producer/fuse.zig").Fuse;
+const _Take = @import("./prosumer/take.zig").Take;
+
 const _Bomb = @import("./hermit/bomb.zig").Bomb;
 const _IsEmpty = @import("./consumer/is_empty.zig").IsEmpty;
 const _ToSlice = @import("./consumer/to_slice.zig").ToSlice;
@@ -56,6 +59,22 @@ pub fn Zignite(comptime Producer: type) type {
         pub const Out = Producer.Type.Out;
         const next = Producer.next;
         const deinit = Producer.deinit;
+
+        pub fn Fuse(comptime T: type) type {
+            return Zignite(_Fuse(State, Out, next, deinit, T.Type.State, T.Type.Out, T.next, T.deinit));
+        }
+
+        pub inline fn fuse(self: Self, prosumer: anytype) Fuse(@TypeOf(prosumer)) {
+            return .{ .producer = Fuse(@TypeOf(prosumer)).Producer.init(self.producer, prosumer) };
+        }
+
+        pub fn Take() type {
+            return Fuse(_Take(Out));
+        }
+
+        pub inline fn take(self: Self, take_count: usize) Take() {
+            return self.fuse(_Take(Out).init(take_count));
+        }
 
         pub inline fn bomb(self: Self, consumer: anytype) @TypeOf(consumer).Type.Out {
             const Cs = @TypeOf(consumer);
