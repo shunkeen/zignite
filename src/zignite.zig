@@ -5,6 +5,7 @@ test "reference all declarations" {
 }
 
 const _Chain = @import("./producer/chain.zig").Chain;
+const _Cycle = @import("./producer/cycle.zig").Cycle;
 const _FromSlice = @import("./producer/from_slice.zig").FromSlice;
 const _Empty = @import("./producer/empty.zig").Empty;
 const _Once = @import("./producer/once.zig").Once;
@@ -110,6 +111,14 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn chain(self: Self, other: anytype) Chain(@TypeOf(other)) {
             return .{ .producer = Chain(@TypeOf(other)).Producer.init(self.producer, other.producer) };
+        }
+
+        pub fn Cycle() type {
+            return Zignite(_Cycle(State, Out, next, deinit));
+        }
+
+        pub inline fn cycle(self: Self) Cycle() {
+            return .{ .producer = Cycle().Producer.init(self.producer) };
         }
 
         pub fn Fuse(comptime T: type) type {
