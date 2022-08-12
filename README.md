@@ -60,6 +60,7 @@ test "Example Code" {
 * [takeWhile](./src/prosumer/take_while.zig)
 
 ### 💣bomb
+* [all](./src/consumer/all.zig)
 * [fold](./src/consumer/fold.zig)
 * [isEmpty](./src/consumer/is_empty.zig)
 * [product](./src/consumer/product.zig)
