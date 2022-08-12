@@ -44,6 +44,7 @@ const _Max = @import("./consumer/max.zig").Max;
 const _MaxBy = @import("./consumer/max_by.zig").MaxBy;
 const _MaxByKey = @import("./consumer/max_by_key.zig").MaxByKey;
 const _Min = @import("./consumer/min.zig").Min;
+const _MinBy = @import("./consumer/min_by.zig").MinBy;
 const _Product = @import("./consumer/product.zig").Product;
 const _Reduce = @import("./consumer/reduce.zig").Reduce;
 const _Sum = @import("./consumer/sum.zig").Sum;
@@ -328,6 +329,10 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn min(self: Self) ?Out {
             return self.bomb(_Min(Out).init);
+        }
+
+        pub inline fn minBy(self: Self, comptime comparator: Cmparator) ?Out {
+            return self.bomb(_MinBy(Out, comparator).init);
         }
 
         pub inline fn product(self: Self) Out {
