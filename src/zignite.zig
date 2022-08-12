@@ -1,4 +1,5 @@
 const std = @import("std");
+const Order = std.math.Order;
 
 test "reference all declarations" {
     std.testing.refAllDecls(@This());
@@ -40,6 +41,7 @@ const _ForEach = @import("./consumer/for_each.zig").ForEach;
 const _IsEmpty = @import("./consumer/is_empty.zig").IsEmpty;
 const _Last = @import("./consumer/last.zig").Last;
 const _Max = @import("./consumer/max.zig").Max;
+const _MaxBy = @import("./consumer/max_by.zig").MaxBy;
 const _Product = @import("./consumer/product.zig").Product;
 const _Reduce = @import("./consumer/reduce.zig").Reduce;
 const _Sum = @import("./consumer/sum.zig").Sum;
@@ -106,6 +108,7 @@ pub fn Zignite(comptime Producer: type) type {
         const deinit = Producer.deinit;
 
         const Predicate = fn (value: Out) bool;
+        const Cmparator = fn (x: Out, y: Out) Order;
 
         fn Transformer(comptime T: type) type {
             return fn (value: Out) T;
@@ -311,6 +314,10 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn max(self: Self) ?Out {
             return self.bomb(_Max(Out).init);
+        }
+
+        pub inline fn maxBy(self: Self, comptime comparator: Cmparator) ?Out {
+            return self.bomb(_MaxBy(Out, comparator).init);
         }
 
         pub inline fn product(self: Self) Out {
