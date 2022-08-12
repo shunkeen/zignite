@@ -33,15 +33,21 @@ test "Example Code" {
 
 ## Test code and implementation
 
+### 🔥ignite
 * [empty](./src/producer/empty.zig)
-* [from_slice](./src/producer/from_slice.zig)
+* [fromSlice](./src/producer/from_slice.zig)
 * [once](./src/producer/once.zig)
 * [range](./src/producer/range.zig)
 * [repeat](./src/producer/repeat.zig)
+* [revSlice](./src/producer/rev_slice.zig)
+
+### 🧶fuse
 * [filter](./src/prosumer/filter.zig)
-* [flat_map](./src/prosumer/flat_map.zig)
+* [flatMap](./src/prosumer/flat_map.zig)
 * [take](./src/prosumer/take.zig)
+
+### 💣bomb
 * [fold](./src/consumer/fold.zig)
-* [is_empty](./src/consumer/is_empty.zig)
+* [isEmpty](./src/consumer/is_empty.zig)
 * [sum](./src/consumer/sum.zig)
-* [to_slice](./src/consumer/to_slice.zig)
+* [toSlice](./src/consumer/to_slice.zig)
