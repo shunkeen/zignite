@@ -53,5 +53,6 @@ test "Example Code" {
 ### 💣bomb
 * [fold](./src/consumer/fold.zig)
 * [isEmpty](./src/consumer/is_empty.zig)
+* [product](./src/consumer/product.zig)
 * [sum](./src/consumer/sum.zig)
 * [toSlice](./src/consumer/to_slice.zig)
