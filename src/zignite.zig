@@ -38,6 +38,7 @@ const _FindMap = @import("./consumer/find_map.zig").FindMap;
 const _Fold = @import("./consumer/fold.zig").Fold;
 const _ForEach = @import("./consumer/for_each.zig").ForEach;
 const _IsEmpty = @import("./consumer/is_empty.zig").IsEmpty;
+const _Last = @import("./consumer/last.zig").Last;
 const _Product = @import("./consumer/product.zig").Product;
 const _Reduce = @import("./consumer/reduce.zig").Reduce;
 const _Sum = @import("./consumer/sum.zig").Sum;
@@ -301,6 +302,10 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn isEmpty(self: Self) bool {
             return self.bomb(_IsEmpty(Out).init);
+        }
+
+        pub inline fn last(self: Self) ?Out {
+            return self.bomb(_Last(Out).init);
         }
 
         pub inline fn product(self: Self) Out {
