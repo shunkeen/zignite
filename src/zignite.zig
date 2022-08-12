@@ -36,6 +36,7 @@ const _Count = @import("./consumer/count.zig").Count;
 const _Find = @import("./consumer/find.zig").Find;
 const _FindMap = @import("./consumer/find_map.zig").FindMap;
 const _Fold = @import("./consumer/fold.zig").Fold;
+const _ForEach = @import("./consumer/for_each.zig").ForEach;
 const _IsEmpty = @import("./consumer/is_empty.zig").IsEmpty;
 const _Product = @import("./consumer/product.zig").Product;
 const _Sum = @import("./consumer/sum.zig").Sum;
@@ -291,6 +292,10 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn fold(self: Self, comptime T: type, init: T, comptime reducer: Reducer(T)) T {
             return self.bomb(_Fold(T, Out, reducer).init(init));
+        }
+
+        pub inline fn forEach(self: Self, comptime transformer: Transformer(void)) void {
+            return self.bomb(_ForEach(Out, transformer).init);
         }
 
         pub inline fn isEmpty(self: Self) bool {

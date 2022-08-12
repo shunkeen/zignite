@@ -66,6 +66,7 @@ test "Example Code" {
 * [find](./src/consumer/find.zig)
 * [findMap](./src/consumer/find_map.zig)
 * [fold](./src/consumer/fold.zig)
+* [forEach](./src/consumer/for_each.zig)
 * [isEmpty](./src/consumer/is_empty.zig)
 * [product](./src/consumer/product.zig)
 * [sum](./src/consumer/sum.zig)
