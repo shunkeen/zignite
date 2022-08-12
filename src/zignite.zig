@@ -24,6 +24,7 @@ const _Scan = @import("./prosumer/scan.zig").Scan;
 const _Skip = @import("./prosumer/skip.zig").Skip;
 const _SkipWhile = @import("./prosumer/skip_while.zig").SkipWhile;
 const _Take = @import("./prosumer/take.zig").Take;
+const _TakeWhile = @import("./prosumer/take_while.zig").TakeWhile;
 
 const _Bomb = @import("./hermit/bomb.zig").Bomb;
 const _Fold = @import("./consumer/fold.zig").Fold;
@@ -220,6 +221,14 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn take(self: Self, take_count: usize) Take() {
             return self.fuse(_Take(Out).init(take_count));
+        }
+
+        pub fn TakeWhile(comptime predicate: Predicate) type {
+            return Fuse(_TakeWhile(Out, predicate));
+        }
+
+        pub inline fn takeWhile(self: Self, comptime predicate: Predicate) TakeWhile(predicate) {
+            return self.fuse(_TakeWhile(Out, predicate).init);
         }
 
         pub inline fn bomb(self: Self, consumer: anytype) @TypeOf(consumer).Type.Out {

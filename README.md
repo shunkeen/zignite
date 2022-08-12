@@ -54,6 +54,7 @@ test "Example Code" {
 * [skip](./src/prosumer/skip.zig)
 * [skipWhile](./src/prosumer/skip_while.zig)
 * [take](./src/prosumer/take.zig)
+* [takeWhile](./src/prosumer/take_while.zig)
 
 ### 💣bomb
 * [fold](./src/consumer/fold.zig)
