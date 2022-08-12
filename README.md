@@ -69,5 +69,6 @@ test "Example Code" {
 * [forEach](./src/consumer/for_each.zig)
 * [isEmpty](./src/consumer/is_empty.zig)
 * [product](./src/consumer/product.zig)
+* [reduce](./src/consumer/reduce.zig)
 * [sum](./src/consumer/sum.zig)
 * [toSlice](./src/consumer/to_slice.zig)
