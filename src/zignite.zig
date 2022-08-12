@@ -12,6 +12,7 @@ const _Repeat = @import("./producer/repeat.zig").Repeat;
 const _RevSlice = @import("./producer/rev_slice.zig").RevSlice;
 
 const _Fuse = @import("./producer/fuse.zig").Fuse;
+const _Enumerate = @import("./prosumer/enumerate.zig").Enumerate;
 const _Filter = @import("./prosumer/filter.zig").Filter;
 const _FlatMap = @import("./prosumer/flat_map.zig").FlatMap;
 const _Take = @import("./prosumer/take.zig").Take;
@@ -98,6 +99,14 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn fuse(self: Self, prosumer: anytype) Fuse(@TypeOf(prosumer)) {
             return .{ .producer = Fuse(@TypeOf(prosumer)).Producer.init(self.producer, prosumer) };
+        }
+
+        pub fn Enumerate() type {
+            return Fuse(_Enumerate(Out));
+        }
+
+        pub inline fn enumerate(self: Self) Enumerate() {
+            return self.fuse(_Enumerate(Out).init);
         }
 
         pub fn Filter(comptime predicate: Predicate) type {

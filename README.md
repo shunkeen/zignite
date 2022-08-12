@@ -42,6 +42,7 @@ test "Example Code" {
 * [revSlice](./src/producer/rev_slice.zig)
 
 ### 🧶fuse
+* [enumerate](./src/prosumer/enumerate.zig)
 * [filter](./src/prosumer/filter.zig)
 * [flatMap](./src/prosumer/flat_map.zig)
 * [take](./src/prosumer/take.zig)
