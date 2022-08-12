@@ -52,6 +52,7 @@ test "Example Code" {
 * [mapWhile](./src/prosumer/map_while.zig)
 * [scan](./src/prosumer/scan.zig)
 * [skip](./src/prosumer/skip.zig)
+* [skipWhile](./src/prosumer/skip_while.zig)
 * [take](./src/prosumer/take.zig)
 
 ### 💣bomb

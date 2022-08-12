@@ -22,6 +22,7 @@ const _Map = @import("./prosumer/map.zig").Map;
 const _MapWhile = @import("./prosumer/map_while.zig").MapWhile;
 const _Scan = @import("./prosumer/scan.zig").Scan;
 const _Skip = @import("./prosumer/skip.zig").Skip;
+const _SkipWhile = @import("./prosumer/skip_while.zig").SkipWhile;
 const _Take = @import("./prosumer/take.zig").Take;
 
 const _Bomb = @import("./hermit/bomb.zig").Bomb;
@@ -203,6 +204,14 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn skip(self: Self, skip_count: usize) Skip() {
             return self.fuse(_Skip(Out).init(skip_count));
+        }
+
+        pub fn SkipWhile(comptime predicate: Predicate) type {
+            return Fuse(_SkipWhile(Out, predicate));
+        }
+
+        pub inline fn skipWhile(self: Self, comptime predicate: Predicate) SkipWhile(predicate) {
+            return self.fuse(_SkipWhile(Out, predicate).init);
         }
 
         pub fn Take() type {
