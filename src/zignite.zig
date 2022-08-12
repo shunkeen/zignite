@@ -17,6 +17,7 @@ const _Filter = @import("./prosumer/filter.zig").Filter;
 const _FilterMap = @import("./prosumer/filter_map.zig").FilterMap;
 const _FlatMap = @import("./prosumer/flat_map.zig").FlatMap;
 const _Flatten = @import("./prosumer/flatten.zig").Flatten;
+const _Map = @import("./prosumer/map.zig").Map;
 const _Take = @import("./prosumer/take.zig").Take;
 
 const _Bomb = @import("./hermit/bomb.zig").Bomb;
@@ -157,6 +158,14 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn flatten(self: Self) Flatten() {
             return self.fuse(RawFlatten().init);
+        }
+
+        pub fn Map(comptime T: type, comptime transformer: Transformer(T)) type {
+            return Fuse(_Map(Out, T, transformer));
+        }
+
+        pub inline fn map(self: Self, comptime T: type, comptime transformer: Transformer(T)) Map(T, transformer) {
+            return self.fuse(_Map(Out, T, transformer).init);
         }
 
         pub fn Take() type {
