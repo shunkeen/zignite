@@ -71,6 +71,7 @@ test "Example Code" {
 * [last](./src/consumer/last.zig)
 * [max](./src/consumer/max.zig)
 * [maxBy](./src/consumer/max_by.zig)
+* [maxByKey](./src/consumer/max_by_key.zig)
 * [product](./src/consumer/product.zig)
 * [reduce](./src/consumer/reduce.zig)
 * [sum](./src/consumer/sum.zig)
