@@ -44,6 +44,7 @@ test "Example Code" {
 ### 🧶fuse
 * [enumerate](./src/prosumer/enumerate.zig)
 * [filter](./src/prosumer/filter.zig)
+* [filterMap](./src/prosumer/filter_map.zig)
 * [flatMap](./src/prosumer/flat_map.zig)
 * [take](./src/prosumer/take.zig)
 

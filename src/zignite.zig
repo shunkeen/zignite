@@ -14,6 +14,7 @@ const _RevSlice = @import("./producer/rev_slice.zig").RevSlice;
 const _Fuse = @import("./producer/fuse.zig").Fuse;
 const _Enumerate = @import("./prosumer/enumerate.zig").Enumerate;
 const _Filter = @import("./prosumer/filter.zig").Filter;
+const _FilterMap = @import("./prosumer/filter_map.zig").FilterMap;
 const _FlatMap = @import("./prosumer/flat_map.zig").FlatMap;
 const _Take = @import("./prosumer/take.zig").Take;
 
@@ -115,6 +116,14 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn filter(self: Self, comptime predicate: Predicate) Filter(predicate) {
             return self.fuse(_Filter(Out, predicate).init);
+        }
+
+        pub fn FilterMap(comptime T: type, comptime transformer: Transformer(?T)) type {
+            return Fuse(_FilterMap(Out, T, transformer));
+        }
+
+        pub inline fn filterMap(self: Self, comptime T: type, comptime transformer: Transformer(?T)) FilterMap(T, transformer) {
+            return self.fuse(_FilterMap(Out, T, transformer).init);
         }
 
         pub fn FlatMap(comptime T: type, comptime transformer: Transformer(T)) type {
