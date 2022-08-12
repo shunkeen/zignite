@@ -47,6 +47,7 @@ const _Min = @import("./consumer/min.zig").Min;
 const _MinBy = @import("./consumer/min_by.zig").MinBy;
 const _MinByKey = @import("./consumer/min_by_key.zig").MinByKey;
 const _Nth = @import("./consumer/nth.zig").Nth;
+const _PartitionSlice = @import("./consumer/partition_slice.zig").PartitionSlice;
 const _Product = @import("./consumer/product.zig").Product;
 const _Reduce = @import("./consumer/reduce.zig").Reduce;
 const _Sum = @import("./consumer/sum.zig").Sum;
@@ -343,6 +344,10 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn nth(self: Self, nth_count: usize) ?Out {
             return self.bomb(_Nth(Out).init(nth_count));
+        }
+
+        pub inline fn partitionSlice(self: Self, comptime predicate: Predicate, true_buffer: []Out, flase_buffer: []Out) _PartitionSlice(Out, predicate).Type.Out {
+            return self.bomb(_PartitionSlice(Out, predicate).init(true_buffer, flase_buffer));
         }
 
         pub inline fn product(self: Self) Out {
