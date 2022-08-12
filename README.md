@@ -77,6 +77,7 @@ test "Example Code" {
 * [minByKey](./src/consumer/min_by_key.zig)
 * [nth](./src/consumer/nth.zig)
 * [partitionSlice](./src/consumer/partition_slice.zig)
+* [position](./src/consumer/position.zig)
 * [product](./src/consumer/product.zig)
 * [reduce](./src/consumer/reduce.zig)
 * [sum](./src/consumer/sum.zig)
