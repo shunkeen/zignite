@@ -42,6 +42,7 @@ test "Example Code" {
 * [range](./src/producer/range.zig)
 * [repeat](./src/producer/repeat.zig)
 * [revSlice](./src/producer/rev_slice.zig)
+* [zip](./src/producer/zip.zig)
 
 ### 🧶fuse
 * [enumerate](./src/prosumer/enumerate.zig)

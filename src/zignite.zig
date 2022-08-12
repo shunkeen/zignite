@@ -12,6 +12,7 @@ const _Once = @import("./producer/once.zig").Once;
 const _Range = @import("./producer/range.zig").Range;
 const _Repeat = @import("./producer/repeat.zig").Repeat;
 const _RevSlice = @import("./producer/rev_slice.zig").RevSlice;
+const _Zip = @import("./producer/zip.zig").Zip;
 
 const _Fuse = @import("./producer/fuse.zig").Fuse;
 const _Enumerate = @import("./prosumer/enumerate.zig").Enumerate;
@@ -119,6 +120,14 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn cycle(self: Self) Cycle() {
             return .{ .producer = Cycle().Producer.init(self.producer) };
+        }
+
+        pub fn Zip(T: anytype) type {
+            return Zignite(_Zip(State, Out, next, deinit, T.Producer.Type.State, T.Producer.Type.Out, T.Producer.next, T.Producer.deinit));
+        }
+
+        pub inline fn zip(self: Self, other: anytype) Zip(@TypeOf(other)) {
+            return .{ .producer = Zip(@TypeOf(other)).Producer.init(self.producer, other.producer) };
         }
 
         pub fn Fuse(comptime T: type) type {
