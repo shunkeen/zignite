@@ -62,6 +62,7 @@ test "Example Code" {
 ### 💣bomb
 * [all](./src/consumer/all.zig)
 * [any](./src/consumer/any.zig)
+* [count](./src/consumer/count.zig)
 * [fold](./src/consumer/fold.zig)
 * [isEmpty](./src/consumer/is_empty.zig)
 * [product](./src/consumer/product.zig)
