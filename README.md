@@ -47,6 +47,7 @@ test "Example Code" {
 * [filterMap](./src/prosumer/filter_map.zig)
 * [flatMap](./src/prosumer/flat_map.zig)
 * [flatten](./src/prosumer/flatten.zig)
+* [inspect](./src/prosumer/inspect.zig)
 * [map](./src/prosumer/map.zig)
 * [take](./src/prosumer/take.zig)
 
