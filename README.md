@@ -82,3 +82,4 @@ test "Example Code" {
 * [reduce](./src/consumer/reduce.zig)
 * [sum](./src/consumer/sum.zig)
 * [toSlice](./src/consumer/to_slice.zig)
+* [unzipSlice](./src/consumer/unzip_slice.zig)

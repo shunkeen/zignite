@@ -53,6 +53,7 @@ const _Product = @import("./consumer/product.zig").Product;
 const _Reduce = @import("./consumer/reduce.zig").Reduce;
 const _Sum = @import("./consumer/sum.zig").Sum;
 const _ToSlice = @import("./consumer/to_slice.zig").ToSlice;
+const _UnzipSlice = @import("./consumer/unzip_slice.zig").UnzipSlice;
 
 pub fn Empty(comptime T: type) type {
     return Zignite(_Empty(T));
@@ -369,6 +370,10 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn toSlice(self: Self, buffer: []Out) ?[]const Out {
             return self.bomb(_ToSlice(Out).init(buffer));
+        }
+
+        pub inline fn unzipSlice(self: Self, comptime T: type, buffer0: []T, comptime U: type, buffer1: []U) _UnzipSlice(Out, T, U).Type.Out {
+            return self.bomb(_UnzipSlice(Out, T, U).init(buffer0, buffer1));
         }
     };
 }
