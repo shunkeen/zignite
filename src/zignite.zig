@@ -4,6 +4,7 @@ test "reference all declarations" {
     std.testing.refAllDecls(@This());
 }
 
+const _Chain = @import("./producer/chain.zig").Chain;
 const _FromSlice = @import("./producer/from_slice.zig").FromSlice;
 const _Empty = @import("./producer/empty.zig").Empty;
 const _Once = @import("./producer/once.zig").Once;
@@ -101,6 +102,14 @@ pub fn Zignite(comptime Producer: type) type {
 
         fn Reducer(comptime T: type) type {
             return fn (accumulator: T, value: Out) T;
+        }
+
+        pub fn Chain(T: anytype) type {
+            return Zignite(_Chain(State, Out, next, deinit, T.Producer.Type.State, T.Producer.next, T.Producer.deinit));
+        }
+
+        pub inline fn chain(self: Self, other: anytype) Chain(@TypeOf(other)) {
+            return .{ .producer = Chain(@TypeOf(other)).Producer.init(self.producer, other.producer) };
         }
 
         pub fn Fuse(comptime T: type) type {

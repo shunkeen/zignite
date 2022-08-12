@@ -34,6 +34,7 @@ test "Example Code" {
 ## Test code and implementation
 
 ### 🔥ignite
+* [chain](./src/producer/chain.zig)
 * [empty](./src/producer/empty.zig)
 * [fromSlice](./src/producer/from_slice.zig)
 * [once](./src/producer/once.zig)
