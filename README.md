@@ -59,11 +59,12 @@ test "Example Code" {
 * [take](./src/prosumer/take.zig)
 * [takeWhile](./src/prosumer/take_while.zig)
 
-### 💣bomb
+### 💥bomb
 * [all](./src/consumer/all.zig)
 * [any](./src/consumer/any.zig)
 * [count](./src/consumer/count.zig)
 * [find](./src/consumer/find.zig)
+* [findMap](./src/consumer/find_map.zig)
 * [fold](./src/consumer/fold.zig)
 * [isEmpty](./src/consumer/is_empty.zig)
 * [product](./src/consumer/product.zig)

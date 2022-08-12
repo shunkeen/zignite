@@ -34,6 +34,7 @@ const _All = @import("./consumer/all.zig").All;
 const _Any = @import("./consumer/any.zig").Any;
 const _Count = @import("./consumer/count.zig").Count;
 const _Find = @import("./consumer/find.zig").Find;
+const _FindMap = @import("./consumer/find_map.zig").FindMap;
 const _Fold = @import("./consumer/fold.zig").Fold;
 const _IsEmpty = @import("./consumer/is_empty.zig").IsEmpty;
 const _Product = @import("./consumer/product.zig").Product;
@@ -282,6 +283,10 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn find(self: Self, comptime predicate: Predicate) ?Out {
             return self.bomb(_Find(Out, predicate).init);
+        }
+
+        pub inline fn findMap(self: Self, comptime T: type, comptime transformer: Transformer(?T)) ?T {
+            return self.bomb(_FindMap(Out, T, transformer).init);
         }
 
         pub inline fn fold(self: Self, comptime T: type, init: T, comptime reducer: Reducer(T)) T {
