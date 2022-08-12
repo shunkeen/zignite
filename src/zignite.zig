@@ -33,6 +33,7 @@ const _Bomb = @import("./hermit/bomb.zig").Bomb;
 const _All = @import("./consumer/all.zig").All;
 const _Any = @import("./consumer/any.zig").Any;
 const _Count = @import("./consumer/count.zig").Count;
+const _Find = @import("./consumer/find.zig").Find;
 const _Fold = @import("./consumer/fold.zig").Fold;
 const _IsEmpty = @import("./consumer/is_empty.zig").IsEmpty;
 const _Product = @import("./consumer/product.zig").Product;
@@ -277,6 +278,10 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn count(self: Self) usize {
             return self.bomb(_Count(Out).init);
+        }
+
+        pub inline fn find(self: Self, comptime predicate: Predicate) ?Out {
+            return self.bomb(_Find(Out, predicate).init);
         }
 
         pub inline fn fold(self: Self, comptime T: type, init: T, comptime reducer: Reducer(T)) T {

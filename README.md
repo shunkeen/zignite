@@ -22,8 +22,8 @@ fn repeat_take(x: usize) RepeatTake {
 
 test "Example Code" {
     const x = zignite
-        .range(usize, 0, 100) //              { 0, 1, ..., 99 }
-        .filter(even) //                      { 0, 2, ..., 98 }
+        .range(usize, 0, 100) //             { 0, 1, ..., 99 }
+        .filter(even) //                     { 0, 2, ..., 98 }
         .flatMap(RepeatTake, repeat_take) // { 2, 2, 4, 4, 4, 4, ..., 98 }
         .sum();
 
@@ -63,6 +63,7 @@ test "Example Code" {
 * [all](./src/consumer/all.zig)
 * [any](./src/consumer/any.zig)
 * [count](./src/consumer/count.zig)
+* [find](./src/consumer/find.zig)
 * [fold](./src/consumer/fold.zig)
 * [isEmpty](./src/consumer/is_empty.zig)
 * [product](./src/consumer/product.zig)
