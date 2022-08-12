@@ -46,6 +46,7 @@ test "Example Code" {
 * [filter](./src/prosumer/filter.zig)
 * [filterMap](./src/prosumer/filter_map.zig)
 * [flatMap](./src/prosumer/flat_map.zig)
+* [flatten](./src/prosumer/flatten.zig)
 * [take](./src/prosumer/take.zig)
 
 ### 💣bomb
