@@ -31,6 +31,7 @@ const _TakeWhile = @import("./prosumer/take_while.zig").TakeWhile;
 
 const _Bomb = @import("./hermit/bomb.zig").Bomb;
 const _All = @import("./consumer/all.zig").All;
+const _Any = @import("./consumer/any.zig").Any;
 const _Fold = @import("./consumer/fold.zig").Fold;
 const _IsEmpty = @import("./consumer/is_empty.zig").IsEmpty;
 const _Product = @import("./consumer/product.zig").Product;
@@ -267,6 +268,10 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn all(self: Self, comptime predicate: Predicate) bool {
             return self.bomb(_All(Out, predicate).init);
+        }
+
+        pub inline fn any(self: Self, comptime predicate: Predicate) bool {
+            return self.bomb(_Any(Out, predicate).init);
         }
 
         pub inline fn fold(self: Self, comptime T: type, init: T, comptime reducer: Reducer(T)) T {
