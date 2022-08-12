@@ -9,6 +9,7 @@ const _Empty = @import("./producer/empty.zig").Empty;
 const _Once = @import("./producer/once.zig").Once;
 const _Range = @import("./producer/range.zig").Range;
 const _Repeat = @import("./producer/repeat.zig").Repeat;
+const _RevSlice = @import("./producer/rev_slice.zig").RevSlice;
 
 const _Fuse = @import("./producer/fuse.zig").Fuse;
 const _Filter = @import("./prosumer/filter.zig").Filter;
@@ -59,6 +60,14 @@ pub fn Repeat(comptime T: type) type {
 
 pub inline fn repeat(comptime T: type, value: T) Repeat(T) {
     return .{ .producer = _Repeat(T).init(value) };
+}
+
+pub fn RevSlice(comptime T: type) type {
+    return Zignite(_RevSlice(T));
+}
+
+pub inline fn revSlice(comptime T: type, slice: []const T) RevSlice(T) {
+    return .{ .producer = _RevSlice(T).init(slice) };
 }
 
 pub fn Zignite(comptime Producer: type) type {
