@@ -49,6 +49,7 @@ test "Example Code" {
 * [flatten](./src/prosumer/flatten.zig)
 * [inspect](./src/prosumer/inspect.zig)
 * [map](./src/prosumer/map.zig)
+* [mapWhile](./src/prosumer/map_while.zig)
 * [take](./src/prosumer/take.zig)
 
 ### 💣bomb

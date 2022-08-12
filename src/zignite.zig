@@ -19,6 +19,7 @@ const _FlatMap = @import("./prosumer/flat_map.zig").FlatMap;
 const _Flatten = @import("./prosumer/flatten.zig").Flatten;
 const _Inspect = @import("./prosumer/inspect.zig").Inspect;
 const _Map = @import("./prosumer/map.zig").Map;
+const _MapWhile = @import("./prosumer/map_while.zig").MapWhile;
 const _Take = @import("./prosumer/take.zig").Take;
 
 const _Bomb = @import("./hermit/bomb.zig").Bomb;
@@ -176,6 +177,14 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn map(self: Self, comptime T: type, comptime transformer: Transformer(T)) Map(T, transformer) {
             return self.fuse(_Map(Out, T, transformer).init);
+        }
+
+        pub fn MapWhile(comptime T: type, comptime transformer: Transformer(?T)) type {
+            return Fuse(_MapWhile(Out, T, transformer));
+        }
+
+        pub inline fn mapWhile(self: Self, comptime T: type, comptime transformer: Transformer(?T)) MapWhile(T, transformer) {
+            return self.fuse(_MapWhile(Out, T, transformer).init);
         }
 
         pub fn Take() type {
