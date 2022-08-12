@@ -50,6 +50,7 @@ test "Example Code" {
 * [inspect](./src/prosumer/inspect.zig)
 * [map](./src/prosumer/map.zig)
 * [mapWhile](./src/prosumer/map_while.zig)
+* [scan](./src/prosumer/scan.zig)
 * [take](./src/prosumer/take.zig)
 
 ### 💣bomb
