@@ -1,5 +1,5 @@
 # zignite
-zignite is a lazy stream library for Zig.
+A lazy stream (iterator) library for Zig.
 
 ## Example Code
 
