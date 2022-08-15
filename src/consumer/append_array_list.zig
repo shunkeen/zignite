@@ -1,14 +1,17 @@
 const zignite = @import("../zignite.zig");
 const std = @import("std");
 const ArrayList = std.ArrayList;
+const Allocator = std.mem.Allocator;
 const expect = std.testing.expect;
 const ConsumerType = @import("consumer_type.zig").ConsumerType;
 
 test "append_array_list:" {
+    const allocator = std.testing.allocator;
+
     {
-        var list = ArrayList(i32).init(std.testing.allocator);
+        const list = try zignite.range(i32, 1, 3).toArrayList(allocator);
         defer list.deinit();
-        try zignite.range(i32, 1, 3).appendArrayList(&list);
+
         try expect(list.items[0] == 1);
         try expect(list.items[1] == 2);
         try expect(list.items[2] == 3);
@@ -16,9 +19,8 @@ test "append_array_list:" {
     }
 
     {
-        var list = ArrayList(i32).init(std.testing.allocator);
+        const list = try zignite.empty(i32).toArrayList(allocator);
         defer list.deinit();
-        try zignite.empty(i32).appendArrayList(&list);
         try expect(list.items.len == 0);
     }
 }
@@ -27,7 +29,7 @@ pub fn AppendArrayList(comptime T: type) type {
     return struct {
         list: *ArrayList(T),
 
-        pub const Type = ConsumerType(T, @This(), anyerror!void);
+        pub const Type = ConsumerType(T, @This(), Allocator.Error!void);
 
         pub inline fn init(list: *ArrayList(T)) Type.State {
             return .{ .list = list };
