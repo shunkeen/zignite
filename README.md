@@ -83,6 +83,7 @@ test "Example Code" {
 * [partitionSlice](./src/consumer/partition_slice.zig)
 * [position](./src/consumer/position.zig)
 * [product](./src/consumer/product.zig)
+* [putAutoArrayHashMap](./src/consumer/put_auto_array_hash_map.zig)
 * [putAutoHashMap](./src/consumer/put_auto_hash_map.zig)
 * [reduce](./src/consumer/reduce.zig)
 * [sum](./src/consumer/sum.zig)

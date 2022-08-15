@@ -1,6 +1,7 @@
 const std = @import("std");
 const Allocator = std.mem.Allocator;
 const ArrayList = std.ArrayList;
+const AutoArrayHashMap = std.AutoArrayHashMap;
 const AutoHashMap = std.AutoHashMap;
 const MultiArrayList = std.MultiArrayList;
 const Order = std.math.Order;
@@ -58,6 +59,7 @@ const _Nth = @import("./consumer/nth.zig").Nth;
 const _PartitionSlice = @import("./consumer/partition_slice.zig").PartitionSlice;
 const _Position = @import("./consumer/position.zig").Position;
 const _Product = @import("./consumer/product.zig").Product;
+const _PutAutoArrayHashMap = @import("./consumer/put_auto_array_hash_map.zig").PutAutoArrayHashMap;
 const _PutAutoHashMap = @import("./consumer/put_auto_hash_map.zig").PutAutoHashMap;
 const _Reduce = @import("./consumer/reduce.zig").Reduce;
 const _Sum = @import("./consumer/sum.zig").Sum;
@@ -391,6 +393,10 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn product(self: Self) Out {
             return self.bomb(_Product(Out).init);
+        }
+
+        pub inline fn putAutoArrayHashMap(self: Self, comptime T: type, comptime U: type, hash_map: *AutoArrayHashMap(T, U)) !void {
+            return self.bomb(_PutAutoArrayHashMap(Out, T, U).init(hash_map));
         }
 
         pub inline fn putAutoHashMap(self: Self, comptime T: type, comptime U: type, hash_map: *AutoHashMap(T, U)) Allocator.Error!void {
