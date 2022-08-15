@@ -7,8 +7,9 @@ test "reference all declarations" {
 
 const _Chain = @import("./producer/chain.zig").Chain;
 const _Cycle = @import("./producer/cycle.zig").Cycle;
-const _FromSlice = @import("./producer/from_slice.zig").FromSlice;
 const _Empty = @import("./producer/empty.zig").Empty;
+const _FromSlice = @import("./producer/from_slice.zig").FromSlice;
+const _ConstIterator = @import("./producer/const_iterator.zig").ConstIterator;
 const _Once = @import("./producer/once.zig").Once;
 const _Range = @import("./producer/range.zig").Range;
 const _Repeat = @import("./producer/repeat.zig").Repeat;
@@ -140,6 +141,14 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn cycle(self: Self) Cycle() {
             return .{ .producer = Cycle().Producer.init(self.producer) };
+        }
+
+        pub fn ConstIterator() type {
+            return *_ConstIterator(State, Out, next, deinit);
+        }
+
+        pub inline fn constIterator(self: Self) ConstIterator() {
+            return &_ConstIterator(State, Out, next, deinit).init(self.producer);
         }
 
         pub fn Zip(T: anytype) type {
