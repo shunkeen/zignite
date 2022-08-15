@@ -5,23 +5,16 @@ pub fn HermitType(comptime S: type, comptime T: type) type {
 
         pub const Event = State;
 
-        pub const ActionTag = enum {
-            _return,
-            _continue,
-        };
         pub const Action = struct {
             state: State,
-            tag: union(ActionTag) {
-                _return: Out,
-                _continue: void,
-            },
+            value: ?Out,
 
             pub inline fn _return(state: State, out: Out) Action {
-                return .{ .state = state, .tag = .{ ._return = out } };
+                return .{ .state = state, .value = out };
             }
 
             pub inline fn _continue(state: State) Action {
-                return .{ .state = state, .tag = .{ ._continue = {} } };
+                return .{ .state = state, .value = null };
             }
         };
 
@@ -34,14 +27,9 @@ pub fn HermitType(comptime S: type, comptime T: type) type {
         pub inline fn run(state: State, comptime next: Next, comptime deinit: Deinit) Out {
             var a = Action._continue(state);
             defer deinit(a.state);
-
             const a_i = .{ .modifier = .always_inline };
-            while (true) {
-                switch (a.tag) {
-                    ._return => |x| return x,
-                    ._continue => a = @call(a_i, next, .{a.state}),
-                }
-            }
+            while (a.value == null) a = @call(a_i, next, .{a.state});
+            return a.value.?;
         }
     };
 }
