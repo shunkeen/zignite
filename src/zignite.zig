@@ -12,6 +12,7 @@ const _Chain = @import("./producer/chain.zig").Chain;
 const _ConstIterator = @import("./producer/const_iterator.zig").ConstIterator;
 const _Cycle = @import("./producer/cycle.zig").Cycle;
 const _Empty = @import("./producer/empty.zig").Empty;
+const _FromMultiArrayList = @import("./producer/from_multi_array_list.zig").FromMultiArrayList;
 const _FromSlice = @import("./producer/from_slice.zig").FromSlice;
 const _Once = @import("./producer/once.zig").Once;
 const _Range = @import("./producer/range.zig").Range;
@@ -67,6 +68,14 @@ pub fn Empty(comptime T: type) type {
 
 pub inline fn empty(comptime T: type) Empty(T) {
     return .{ .producer = _Empty(T).init };
+}
+
+pub fn FromMultiArrayList(comptime T: type) type {
+    return Zignite(_FromMultiArrayList(T));
+}
+
+pub inline fn fromMultiArrayList(comptime T: type, list: MultiArrayList(T)) FromMultiArrayList(T) {
+    return .{ .producer = _FromMultiArrayList(T).init(list) };
 }
 
 pub fn FromSlice(comptime T: type) type {
