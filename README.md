@@ -64,7 +64,6 @@ test "Example Code" {
 ### 💥bomb
 * [all](./src/consumer/all.zig)
 * [any](./src/consumer/any.zig)
-* [appendMultiArrayList](./src/consumer/append_multi_array_list.zig)
 * [count](./src/consumer/count.zig)
 * [find](./src/consumer/find.zig)
 * [findMap](./src/consumer/find_map.zig)
@@ -88,5 +87,6 @@ test "Example Code" {
 * [reduce](./src/consumer/reduce.zig)
 * [sum](./src/consumer/sum.zig)
 * [toArrayList](./src/consumer/append_array_list.zig)
+* [toMultiArrayList](./src/consumer/append_multi_array_list.zig)
 * [toSlice](./src/consumer/to_slice.zig)
 * [unzipSlice](./src/consumer/unzip_slice.zig)

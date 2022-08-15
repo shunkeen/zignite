@@ -321,10 +321,6 @@ pub fn Zignite(comptime Producer: type) type {
             return self.bomb(_Any(Out, predicate).init);
         }
 
-        pub inline fn appendMultiArrayList(self: Self, list: *MultiArrayList(Out), allocator: Allocator) !void {
-            return self.bomb(_AppendMultiArrayList(Out).init(list, allocator));
-        }
-
         pub inline fn count(self: Self) usize {
             return self.bomb(_Count(Out).init);
         }
@@ -420,6 +416,17 @@ pub fn Zignite(comptime Producer: type) type {
                 return list;
             } else |err| {
                 list.deinit();
+                return err;
+            }
+        }
+
+        pub inline fn toMultiArrayList(self: Self, allocator: Allocator) Allocator.Error!MultiArrayList(Out) {
+            var list = MultiArrayList(Out){};
+            errdefer list.deinit(allocator);
+            if (self.bomb(_AppendMultiArrayList(Out).init(&list, allocator))) |_| {
+                return list;
+            } else |err| {
+                list.deinit(allocator);
                 return err;
             }
         }

@@ -16,9 +16,9 @@ test "append_multi_array_list:" {
     const allocator = std.testing.allocator;
 
     {
-        var list = MultiArrayList(Foo){};
+        var list = try zignite.fromSlice(Foo, &[_]Foo{ f12, f34 }).toMultiArrayList(allocator);
         defer list.deinit(allocator);
-        try zignite.fromSlice(Foo, &[_]Foo{ f12, f34 }).appendMultiArrayList(&list, allocator);
+
         try expect(list.items(.a)[0] == 1);
         try expect(list.items(.a)[1] == 3);
         try expect(list.items(.b)[0] == 2);
@@ -27,9 +27,8 @@ test "append_multi_array_list:" {
     }
 
     {
-        var list = MultiArrayList(Foo){};
+        var list = try zignite.empty(Foo).toMultiArrayList(allocator);
         defer list.deinit(allocator);
-        try zignite.empty(Foo).appendMultiArrayList(&list, allocator);
         try expect(list.len == 0);
     }
 }
@@ -39,7 +38,7 @@ pub fn AppendMultiArrayList(comptime T: type) type {
         list: *MultiArrayList(T),
         allocator: Allocator,
 
-        pub const Type = ConsumerType(T, @This(), anyerror!void);
+        pub const Type = ConsumerType(T, @This(), Allocator.Error!void);
 
         pub inline fn init(list: *MultiArrayList(T), allocator: Allocator) Type.State {
             return .{ .list = list, .allocator = allocator };
