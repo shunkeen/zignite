@@ -3,6 +3,7 @@ const Allocator = std.mem.Allocator;
 const ArrayList = std.ArrayList;
 const AutoArrayHashMap = std.AutoArrayHashMap;
 const AutoHashMap = std.AutoHashMap;
+const BufMap = std.BufMap;
 const MultiArrayList = std.MultiArrayList;
 const Order = std.math.Order;
 
@@ -61,6 +62,7 @@ const _Position = @import("./consumer/position.zig").Position;
 const _Product = @import("./consumer/product.zig").Product;
 const _PutAutoArrayHashMap = @import("./consumer/put_auto_array_hash_map.zig").PutAutoArrayHashMap;
 const _PutAutoHashMap = @import("./consumer/put_auto_hash_map.zig").PutAutoHashMap;
+const _PutBufMap = @import("./consumer/put_buf_map.zig").PutBufMap;
 const _Reduce = @import("./consumer/reduce.zig").Reduce;
 const _Sum = @import("./consumer/sum.zig").Sum;
 const _ToSlice = @import("./consumer/to_slice.zig").ToSlice;
@@ -401,6 +403,10 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn putAutoHashMap(self: Self, comptime T: type, comptime U: type, hash_map: *AutoHashMap(T, U)) Allocator.Error!void {
             return self.bomb(_PutAutoHashMap(Out, T, U).init(hash_map));
+        }
+
+        pub inline fn putBufMap(self: Self, buf_map: *BufMap) !void {
+            return self.bomb(_PutBufMap(Out).init(buf_map));
         }
 
         pub inline fn reduce(self: Self, comptime reducer: Reducer(Out)) ?Out {
