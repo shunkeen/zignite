@@ -1,4 +1,7 @@
 const std = @import("std");
+const Allocator = std.mem.Allocator;
+const ArrayList = std.ArrayList;
+const MultiArrayList = std.MultiArrayList;
 const Order = std.math.Order;
 
 test "reference all declarations" {
@@ -6,10 +9,10 @@ test "reference all declarations" {
 }
 
 const _Chain = @import("./producer/chain.zig").Chain;
+const _ConstIterator = @import("./producer/const_iterator.zig").ConstIterator;
 const _Cycle = @import("./producer/cycle.zig").Cycle;
 const _Empty = @import("./producer/empty.zig").Empty;
 const _FromSlice = @import("./producer/from_slice.zig").FromSlice;
-const _ConstIterator = @import("./producer/const_iterator.zig").ConstIterator;
 const _Once = @import("./producer/once.zig").Once;
 const _Range = @import("./producer/range.zig").Range;
 const _Repeat = @import("./producer/repeat.zig").Repeat;
@@ -35,6 +38,7 @@ const _Bomb = @import("./hermit/bomb.zig").Bomb;
 const _All = @import("./consumer/all.zig").All;
 const _Any = @import("./consumer/any.zig").Any;
 const _AppendArrayList = @import("./consumer/append_array_list.zig").AppendArrayList;
+const _AppendMultiArrayList = @import("./consumer/append_multi_array_list.zig").AppendMultiArrayList;
 const _Count = @import("./consumer/count.zig").Count;
 const _Find = @import("./consumer/find.zig").Find;
 const _FindMap = @import("./consumer/find_map.zig").FindMap;
@@ -136,20 +140,20 @@ pub fn Zignite(comptime Producer: type) type {
             return .{ .producer = Chain(@TypeOf(other)).Producer.init(self.producer, other.producer) };
         }
 
-        pub fn Cycle() type {
-            return Zignite(_Cycle(State, Out, next, deinit));
-        }
-
-        pub inline fn cycle(self: Self) Cycle() {
-            return .{ .producer = Cycle().Producer.init(self.producer) };
-        }
-
         pub fn ConstIterator() type {
             return *_ConstIterator(State, Out, next, deinit);
         }
 
         pub inline fn constIterator(self: Self) ConstIterator() {
             return &_ConstIterator(State, Out, next, deinit).init(self.producer);
+        }
+
+        pub fn Cycle() type {
+            return Zignite(_Cycle(State, Out, next, deinit));
+        }
+
+        pub inline fn cycle(self: Self) Cycle() {
+            return .{ .producer = Cycle().Producer.init(self.producer) };
         }
 
         pub fn Zip(T: anytype) type {
@@ -302,8 +306,12 @@ pub fn Zignite(comptime Producer: type) type {
             return self.bomb(_Any(Out, predicate).init);
         }
 
-        pub inline fn appendArrayList(self: Self, list: *std.ArrayList(Out)) !void {
+        pub inline fn appendArrayList(self: Self, list: *ArrayList(Out)) !void {
             return self.bomb(_AppendArrayList(Out).init(list));
+        }
+
+        pub inline fn appendMultiArrayList(self: Self, list: *MultiArrayList(Out), allocator: Allocator) !void {
+            return self.bomb(_AppendMultiArrayList(Out).init(list, allocator));
         }
 
         pub inline fn count(self: Self) usize {
