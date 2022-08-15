@@ -34,6 +34,7 @@ const _TakeWhile = @import("./prosumer/take_while.zig").TakeWhile;
 const _Bomb = @import("./hermit/bomb.zig").Bomb;
 const _All = @import("./consumer/all.zig").All;
 const _Any = @import("./consumer/any.zig").Any;
+const _AppendArrayList = @import("./consumer/append_array_list.zig").AppendArrayList;
 const _Count = @import("./consumer/count.zig").Count;
 const _Find = @import("./consumer/find.zig").Find;
 const _FindMap = @import("./consumer/find_map.zig").FindMap;
@@ -299,6 +300,10 @@ pub fn Zignite(comptime Producer: type) type {
 
         pub inline fn any(self: Self, comptime predicate: Predicate) bool {
             return self.bomb(_Any(Out, predicate).init);
+        }
+
+        pub inline fn appendArrayList(self: Self, list: *std.ArrayList(Out)) !void {
+            return self.bomb(_AppendArrayList(Out).init(list));
         }
 
         pub inline fn count(self: Self) usize {

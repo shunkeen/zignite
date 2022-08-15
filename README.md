@@ -63,6 +63,7 @@ test "Example Code" {
 ### 💥bomb
 * [all](./src/consumer/all.zig)
 * [any](./src/consumer/any.zig)
+* [appendArrayList](./src/consumer/append_array_list.zig)
 * [count](./src/consumer/count.zig)
 * [find](./src/consumer/find.zig)
 * [findMap](./src/consumer/find_map.zig)
