@@ -389,10 +389,6 @@ pub fn Zignite(comptime Producer: type) type {
             return self.bomb(_Product(Out).init);
         }
 
-        pub inline fn putAutoHashMap(self: Self, comptime T: type, comptime U: type, hash_map: *AutoHashMap(T, U)) Allocator.Error!void {
-            return self.bomb(_PutAutoHashMap(Out, T, U).init(hash_map));
-        }
-
         pub inline fn putBufMap(self: Self, buf_map: *BufMap) !void {
             return self.bomb(_PutBufMap(Out).init(buf_map));
         }
@@ -420,6 +416,17 @@ pub fn Zignite(comptime Producer: type) type {
             var hash_map = AutoArrayHashMap(T, U).init(allocator);
             errdefer hash_map.deinit();
             if (self.bomb(_PutAutoArrayHashMap(Out, T, U).init(&hash_map))) |_| {
+                return hash_map;
+            } else |err| {
+                hash_map.deinit();
+                return err;
+            }
+        }
+
+        pub inline fn toAutoHashMap(self: Self, comptime T: type, comptime U: type, allocator: Allocator) Allocator.Error!AutoHashMap(T, U) {
+            var hash_map = AutoHashMap(T, U).init(allocator);
+            errdefer hash_map.deinit();
+            if (self.bomb(_PutAutoHashMap(Out, T, U).init(&hash_map))) |_| {
                 return hash_map;
             } else |err| {
                 hash_map.deinit();
