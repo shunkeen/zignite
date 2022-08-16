@@ -40,6 +40,7 @@ test "Example Code" {
 * [empty](./src/producer/empty.zig)
 * [fromArrayList](./src/producer/from_array_list.zig)
 * [fromAutoArrayHashMap](./src/producer/from_auto_array_hash_map.zig)
+* [fromAutoHashMap](./src/producer/from_auto_hash_map.zig)
 * [fromMultiArrayList](./src/producer/from_multi_array_list.zig)
 * [fromSlice](./src/producer/from_slice.zig)
 * [once](./src/producer/once.zig)
