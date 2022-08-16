@@ -3,7 +3,7 @@ const std = @import("std");
 const BufMap = std.BufMap;
 const BufMapHashMap = std.StringHashMap([]const u8);
 const expect = std.testing.expect;
-const ProducerType = @import("producer_type.zig").ProducerType;
+const FromIterable = @import("from_iterable.zig").FromIterable;
 
 test "from_buf_map:" {
     const allocator = std.testing.allocator;
@@ -36,32 +36,4 @@ test "from_buf_map:" {
     }
 }
 
-pub const FromBufMap = struct {
-    buf_map: *const BufMap,
-    iterator: ?*BufMapHashMap.Iterator,
-
-    pub const Type = ProducerType(@This(), BufMapHashMap.Entry);
-
-    pub inline fn init(buf_map: *const BufMap) Type.State {
-        return _init(buf_map, null);
-    }
-
-    pub fn next(event: Type.Event) Type.Action {
-        const b = event.buf_map;
-        if (event.iterator) |i| {
-            if (i.next()) |v| {
-                return Type.Action._yield(_init(b, i), v);
-            } else {
-                return Type.Action._break(_init(b, null));
-            }
-        } else {
-            return Type.Action._continue(_init(b, &b.iterator()));
-        }
-    }
-
-    pub const deinit = Type.nop;
-
-    inline fn _init(buf_map: *const BufMap, iterator: ?*BufMapHashMap.Iterator) Type.State {
-        return .{ .buf_map = buf_map, .iterator = iterator };
-    }
-};
+pub const FromBufMap = FromIterable(*const BufMap, BufMapHashMap.Iterator, BufMapHashMap.Entry);

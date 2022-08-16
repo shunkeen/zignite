@@ -2,7 +2,7 @@ const zignite = @import("../zignite.zig");
 const std = @import("std");
 const AutoHashMap = std.AutoHashMap;
 const expect = std.testing.expect;
-const ProducerType = @import("producer_type.zig").ProducerType;
+const FromIterable = @import("from_iterable.zig").FromIterable;
 
 test "from_auto_hash_map:" {
     const allocator = std.testing.allocator;
@@ -33,33 +33,6 @@ test "from_auto_hash_map:" {
 }
 
 pub fn FromAutoHashMap(comptime S: type, comptime T: type) type {
-    return struct {
-        hash_map: *const AutoHashMap(S, T),
-        iterator: ?*AutoHashMap(S, T).Iterator,
-
-        pub const Type = ProducerType(@This(), AutoHashMap(S, T).Entry);
-
-        pub inline fn init(hash_map: *const AutoHashMap(S, T)) Type.State {
-            return _init(hash_map, null);
-        }
-
-        pub fn next(event: Type.Event) Type.Action {
-            const h = event.hash_map;
-            if (event.iterator) |i| {
-                if (i.next()) |v| {
-                    return Type.Action._yield(_init(h, i), v);
-                } else {
-                    return Type.Action._break(_init(h, null));
-                }
-            } else {
-                return Type.Action._continue(_init(h, &h.iterator()));
-            }
-        }
-
-        pub const deinit = Type.nop;
-
-        inline fn _init(hash_map: *const AutoHashMap(S, T), iterator: ?*AutoHashMap(S, T).Iterator) Type.State {
-            return .{ .hash_map = hash_map, .iterator = iterator };
-        }
-    };
+    const H = AutoHashMap(S, T);
+    return FromIterable(*const H, H.Iterator, H.Entry);
 }
