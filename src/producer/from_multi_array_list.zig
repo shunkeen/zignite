@@ -18,7 +18,7 @@ test "from_multi_array_list:" {
         try list.append(allocator, .{ .a = 3, .b = 4 });
 
         var buffer: [10]Foo = undefined;
-        const b = zignite.fromMultiArrayList(Foo, list).toSlice(&buffer).?;
+        const b = zignite.fromMultiArrayList(Foo, &list).toSlice(&buffer).?;
         try expect(b[0].a == 1);
         try expect(b[0].b == 2);
         try expect(b[1].a == 3);
@@ -31,19 +31,19 @@ test "from_multi_array_list:" {
         defer list.deinit(allocator);
 
         var buffer: [10]Foo = undefined;
-        const b = zignite.fromMultiArrayList(Foo, list).toSlice(&buffer).?;
+        const b = zignite.fromMultiArrayList(Foo, &list).toSlice(&buffer).?;
         try expect(b.len == 0);
     }
 }
 
 pub fn FromMultiArrayList(comptime T: type) type {
     return struct {
-        list: MultiArrayList(T),
+        list: *const MultiArrayList(T),
         index: usize,
 
         pub const Type = ProducerType(@This(), T);
 
-        pub inline fn init(list: MultiArrayList(T)) Type.State {
+        pub inline fn init(list: *const MultiArrayList(T)) Type.State {
             return _init(list, 0);
         }
 
@@ -59,7 +59,7 @@ pub fn FromMultiArrayList(comptime T: type) type {
 
         pub const deinit = Type.nop;
 
-        inline fn _init(list: MultiArrayList(T), index: usize) Type.State {
+        inline fn _init(list: *const MultiArrayList(T), index: usize) Type.State {
             return .{ .list = list, .index = index };
         }
     };

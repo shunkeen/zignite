@@ -80,7 +80,7 @@ pub fn FromMultiArrayList(comptime T: type) type {
     return Zignite(_FromMultiArrayList(T));
 }
 
-pub inline fn fromMultiArrayList(comptime T: type, list: MultiArrayList(T)) FromMultiArrayList(T) {
+pub inline fn fromMultiArrayList(comptime T: type, list: *const MultiArrayList(T)) FromMultiArrayList(T) {
     return .{ .producer = _FromMultiArrayList(T).init(list) };
 }
 
