@@ -389,10 +389,6 @@ pub fn Zignite(comptime Producer: type) type {
             return self.bomb(_Product(Out).init);
         }
 
-        pub inline fn putBufMap(self: Self, buf_map: *BufMap) !void {
-            return self.bomb(_PutBufMap(Out).init(buf_map));
-        }
-
         pub inline fn reduce(self: Self, comptime reducer: Reducer(Out)) ?Out {
             return self.bomb(_Reduce(Out, reducer).init);
         }
@@ -430,6 +426,17 @@ pub fn Zignite(comptime Producer: type) type {
                 return hash_map;
             } else |err| {
                 hash_map.deinit();
+                return err;
+            }
+        }
+
+        pub inline fn toBufMap(self: Self, allocator: Allocator) Allocator.Error!BufMap {
+            var buf_map = BufMap.init(allocator);
+            errdefer buf_map.deinit();
+            if (self.bomb(_PutBufMap(Out).init(&buf_map))) |_| {
+                return buf_map;
+            } else |err| {
+                buf_map.deinit();
                 return err;
             }
         }

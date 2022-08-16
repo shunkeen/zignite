@@ -10,12 +10,10 @@ test "put_buf_map:" {
     const Str = []const u8;
 
     {
-        var buf_map = BufMap.init(allocator);
-        defer buf_map.deinit();
-
         const keys = zignite.fromSlice(Str, &[_]Str{ "key1", "key2", "key3" });
         const vals = zignite.fromSlice(Str, &[_]Str{ "val1", "val2", "val3" });
-        try keys.zip(vals).putBufMap(&buf_map);
+        var buf_map = try keys.zip(vals).toBufMap(allocator);
+        defer buf_map.deinit();
 
         try expect(buf_map.get("key0") == null);
         try expect(std.mem.eql(u8, buf_map.get("key1").?, "val1"));
@@ -25,12 +23,10 @@ test "put_buf_map:" {
     }
 
     {
-        var buf_map = BufMap.init(allocator);
-        defer buf_map.deinit();
-
         const keys = zignite.empty(Str);
         const vals = zignite.empty(Str);
-        try keys.zip(vals).putBufMap(&buf_map);
+        var buf_map = try keys.zip(vals).toBufMap(allocator);
+        defer buf_map.deinit();
 
         try expect(buf_map.count() == 0);
     }
@@ -40,7 +36,7 @@ pub fn PutBufMap(comptime T: type) type {
     return struct {
         buf_map: *BufMap,
 
-        pub const Type = ConsumerType(T, @This(), anyerror!void);
+        pub const Type = ConsumerType(T, @This(), Allocator.Error!void);
 
         pub inline fn init(buf_map: *BufMap) Type.State {
             return .{ .buf_map = buf_map };
