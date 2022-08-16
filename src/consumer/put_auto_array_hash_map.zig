@@ -9,12 +9,10 @@ test "put_auto_array_hash_map:" {
     const allocator = std.testing.allocator;
 
     {
-        var hash_map = AutoArrayHashMap(u32, u8).init(allocator);
-        defer hash_map.deinit();
-
         const keys = zignite.range(u32, 97, 256);
         const vals = zignite.fromSlice(u8, "abc");
-        try keys.zip(vals).putAutoArrayHashMap(u32, u8, &hash_map);
+        var hash_map = try keys.zip(vals).toAutoArrayHashMap(u32, u8, allocator);
+        defer hash_map.deinit();
 
         try expect(hash_map.get(96) == null);
         try expect(hash_map.get(97).? == "a"[0]);
@@ -24,12 +22,10 @@ test "put_auto_array_hash_map:" {
     }
 
     {
-        var hash_map = AutoArrayHashMap(u32, u8).init(allocator);
-        defer hash_map.deinit();
-
         const keys = zignite.empty(u32);
         const vals = zignite.empty(u8);
-        try keys.zip(vals).putAutoArrayHashMap(u32, u8, &hash_map);
+        var hash_map = try keys.zip(vals).toAutoArrayHashMap(u32, u8, allocator);
+        defer hash_map.deinit();
 
         try expect(hash_map.count() == 0);
     }
