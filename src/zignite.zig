@@ -24,6 +24,8 @@ const _FromSlice = @import("./producer/from_slice.zig").FromSlice;
 const _Once = @import("./producer/once.zig").Once;
 const _Range = @import("./producer/range.zig").Range;
 const _Repeat = @import("./producer/repeat.zig").Repeat;
+const _RevArrayList = @import("./producer/rev_array_list.zig").RevArrayList;
+const _RevMultiArrayList = @import("./producer/rev_multi_array_list.zig").RevMultiArrayList;
 const _RevSlice = @import("./producer/rev_slice.zig").RevSlice;
 const _Zip = @import("./producer/zip.zig").Zip;
 
@@ -148,6 +150,22 @@ pub fn Repeat(comptime T: type) type {
 
 pub inline fn repeat(comptime T: type, value: T) Repeat(T) {
     return .{ .producer = _Repeat(T).init(value) };
+}
+
+pub fn RevArrayList(comptime T: type) type {
+    return Zignite(_RevArrayList(T));
+}
+
+pub inline fn revArrayList(comptime T: type, list: *const ArrayList(T)) RevArrayList(T) {
+    return .{ .producer = _RevArrayList(T).init(list) };
+}
+
+pub fn RevMultiArrayList(comptime T: type) type {
+    return Zignite(_RevMultiArrayList(T));
+}
+
+pub inline fn revMultiArrayList(comptime T: type, list: *const MultiArrayList(T)) RevMultiArrayList(T) {
+    return .{ .producer = _RevMultiArrayList(T).init(list) };
 }
 
 pub fn RevSlice(comptime T: type) type {

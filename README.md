@@ -47,6 +47,8 @@ test "Example Code" {
 * [once](./src/producer/once.zig)
 * [range](./src/producer/range.zig)
 * [repeat](./src/producer/repeat.zig)
+* [revArrayList](./src/producer/rev_array_list.zig)
+* [revMultiArrayList](./src/producer/rev_multi_array_list.zig)
 * [revSlice](./src/producer/rev_slice.zig)
 * [zip](./src/producer/zip.zig)
 
