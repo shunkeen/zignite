@@ -2,7 +2,7 @@ const zignite = @import("../zignite.zig");
 const std = @import("std");
 const MultiArrayList = std.MultiArrayList;
 const expect = std.testing.expect;
-const ProducerType = @import("producer_type.zig").ProducerType;
+const ObverseIndex = @import("obverse_index.zig").ObverseIndex;
 
 test "from_multi_array_list:" {
     const allocator = std.testing.allocator;
@@ -38,29 +38,15 @@ test "from_multi_array_list:" {
 
 pub fn FromMultiArrayList(comptime T: type) type {
     return struct {
-        list: *const MultiArrayList(T),
-        index: usize,
+        const List = *const MultiArrayList(T);
+        const I = ObverseIndex(List, T, len, get);
 
-        pub const Type = ProducerType(@This(), T);
-
-        pub inline fn init(list: *const MultiArrayList(T)) Type.State {
-            return _init(list, 0);
+        fn len(list: List) usize {
+            return list.len;
         }
 
-        pub fn next(event: Type.Event) Type.Action {
-            const l = event.list;
-            const i = event.index;
-            if (0 <= i and i < l.len) {
-                return Type.Action._yield(_init(l, i + 1), l.get(i));
-            } else {
-                return Type.Action._break(_init(l, i));
-            }
+        fn get(list: List, index: usize) T {
+            return list.get(index);
         }
-
-        pub const deinit = Type.nop;
-
-        inline fn _init(list: *const MultiArrayList(T), index: usize) Type.State {
-            return .{ .list = list, .index = index };
-        }
-    };
+    }.I;
 }
