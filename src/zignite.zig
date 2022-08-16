@@ -18,6 +18,7 @@ const _Empty = @import("./producer/empty.zig").Empty;
 const _FromArrayList = @import("./producer/from_array_list.zig").FromArrayList;
 const _FromAutoArrayHashMap = @import("./producer/from_auto_array_hash_map.zig").FromAutoArrayHashMap;
 const _FromAutoHashMap = @import("./producer/from_auto_hash_map.zig").FromAutoHashMap;
+const _FromBufMap = @import("./producer/from_buf_map.zig").FromBufMap;
 const _FromMultiArrayList = @import("./producer/from_multi_array_list.zig").FromMultiArrayList;
 const _FromSlice = @import("./producer/from_slice.zig").FromSlice;
 const _Once = @import("./producer/once.zig").Once;
@@ -87,20 +88,26 @@ pub inline fn fromArrayList(comptime T: type, list: *const ArrayList(T)) FromArr
     return .{ .producer = _FromArrayList(T).init(list) };
 }
 
-pub fn FromFromAutoArrayHashMap(comptime S: type, comptime T: type) type {
+pub fn FromAutoArrayHashMap(comptime S: type, comptime T: type) type {
     return Zignite(_FromAutoArrayHashMap(S, T));
 }
 
-pub inline fn fromAutoArrayHashMap(comptime S: type, comptime T: type, hash_map: *const AutoArrayHashMap(S, T)) FromFromAutoArrayHashMap(S, T) {
+pub inline fn fromAutoArrayHashMap(comptime S: type, comptime T: type, hash_map: *const AutoArrayHashMap(S, T)) FromAutoArrayHashMap(S, T) {
     return .{ .producer = _FromAutoArrayHashMap(S, T).init(hash_map) };
 }
 
-pub fn FromFromAutoHashMap(comptime S: type, comptime T: type) type {
+pub fn FromAutoHashMap(comptime S: type, comptime T: type) type {
     return Zignite(_FromAutoHashMap(S, T));
 }
 
-pub inline fn fromAutoHashMap(comptime S: type, comptime T: type, hash_map: *const AutoHashMap(S, T)) FromFromAutoHashMap(S, T) {
+pub inline fn fromAutoHashMap(comptime S: type, comptime T: type, hash_map: *const AutoHashMap(S, T)) FromAutoHashMap(S, T) {
     return .{ .producer = _FromAutoHashMap(S, T).init(hash_map) };
+}
+
+pub const FromBufMap = Zignite(_FromBufMap);
+
+pub inline fn fromBufMap(buf_map: *const BufMap) FromBufMap {
+    return .{ .producer = _FromBufMap.init(buf_map) };
 }
 
 pub fn FromMultiArrayList(comptime T: type) type {
