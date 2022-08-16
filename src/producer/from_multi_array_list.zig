@@ -29,10 +29,7 @@ test "from_multi_array_list:" {
     {
         var list = MultiArrayList(Foo){};
         defer list.deinit(allocator);
-
-        var buffer: [10]Foo = undefined;
-        const b = zignite.fromMultiArrayList(Foo, &list).toSlice(&buffer).?;
-        try expect(b.len == 0);
+        try expect(zignite.fromMultiArrayList(Foo, &list).isEmpty());
     }
 }
 
