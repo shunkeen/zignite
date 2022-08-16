@@ -1,6 +1,6 @@
 const zignite = @import("../zignite.zig");
 const expect = @import("std").testing.expect;
-const ProducerType = @import("producer_type.zig").ProducerType;
+const ReverseIndex = @import("Reverse_index.zig").ReverseIndex;
 
 test "rev_slice:" {
     var buffer1: [10]u8 = undefined;
@@ -22,29 +22,15 @@ test "rev_slice:" {
 
 pub fn RevSlice(comptime T: type) type {
     return struct {
-        slice: []const T,
-        index: usize,
+        const List = []const T;
+        const I = ReverseIndex(List, T, len, get);
 
-        pub const Type = ProducerType(@This(), T);
-
-        pub inline fn init(slice: []const T) Type.State {
-            return _init(slice, slice.len);
+        fn len(list: List) usize {
+            return list.len;
         }
 
-        pub fn next(event: Type.Event) Type.Action {
-            const s = event.slice;
-            const i = event.index;
-            if (0 < i and i <= s.len) {
-                return Type.Action._yield(_init(s, i - 1), s[i - 1]);
-            } else {
-                return Type.Action._break(_init(s, i));
-            }
+        fn get(list: List, index: usize) T {
+            return list[index];
         }
-
-        pub const deinit = Type.nop;
-
-        inline fn _init(slice: []const T, index: usize) Type.State {
-            return .{ .slice = slice, .index = index };
-        }
-    };
+    }.I;
 }
