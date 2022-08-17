@@ -488,7 +488,7 @@ pub fn Zignite(comptime Producer: type) type {
             return list;
         }
 
-        pub inline fn toSlice(self: Self, buffer: []Out) Overflow![]const Out {
+        pub inline fn toSlice(self: Self, buffer: []Out) ?[]const Out {
             return self.bomb(_ToSlice(Out).init(buffer));
         }
 
