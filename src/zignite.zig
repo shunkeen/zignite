@@ -48,6 +48,7 @@ const _Take = @import("./prosumer/take.zig").Take;
 const _TakeWhile = @import("./prosumer/take_while.zig").TakeWhile;
 
 const _Bomb = @import("./hermit/bomb.zig").Bomb;
+const _AddBoundedArray = @import("./consumer/add_bounded_array.zig").AddBoundedArray;
 const _All = @import("./consumer/all.zig").All;
 const _Any = @import("./consumer/any.zig").Any;
 const _AppendArrayList = @import("./consumer/append_array_list.zig").AppendArrayList;
@@ -382,6 +383,12 @@ pub fn Zignite(comptime Producer: type) type {
             const Cs = @TypeOf(consumer);
             const Hm = _Bomb(State, Out, next, deinit, Cs.Type.State, Cs.Type.Out, Cs.next, Cs.deinit);
             return Hm.run(self.producer, consumer);
+        }
+
+        pub inline fn toBoundedArray(self: Self, comptime capacity: usize) error{Overflow}!BoundedArray(Out, capacity) {
+            var list = try BoundedArray(Out, capacity).init(0);
+            try self.bomb(_AddBoundedArray(Out, capacity).init(&list));
+            return list;
         }
 
         pub inline fn all(self: Self, comptime predicate: Predicate) bool {

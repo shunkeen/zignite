@@ -94,6 +94,7 @@ test "Example Code" {
 * [toArrayList](./src/consumer/append_array_list.zig)
 * [toAutoArrayHashMap](./src/consumer/put_auto_array_hash_map.zig)
 * [toAutoHashMap](./src/consumer/put_auto_hash_map.zig)
+* [toBoundedArray](./src/consumer/add_bounded_array.zig)
 * [toBufMap](./src/consumer/put_buf_map.zig)
 * [toMultiArrayList](./src/consumer/append_multi_array_list.zig)
 * [toSlice](./src/consumer/to_slice.zig)
