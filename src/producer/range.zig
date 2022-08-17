@@ -3,22 +3,26 @@ const std = @import("std");
 const expect = std.testing.expect;
 const ProducerType = @import("producer_type.zig").ProducerType;
 
-test "range: 1..3" {
-    var buffer1: [10]i32 = undefined;
-    const b1 = zignite.range(i32, 1, 3).toSlice(&buffer1).?;
-    try expect(b1[0] == 1);
-    try expect(b1[1] == 2);
-    try expect(b1[2] == 3);
-    try expect(b1.len == 3);
+test "range" {
+    {
+        const a = try zignite.range(i32, 1, 3).toBoundedArray(10);
+        try expect(a.get(0) == 1);
+        try expect(a.get(1) == 2);
+        try expect(a.get(2) == 3);
+        try expect(a.len == 3);
+    }
 
-    var buffer2: [10]i32 = undefined;
-    const b2 = zignite.range(i32, -1, 3).toSlice(&buffer2).?;
-    try expect(b2[0] == -1);
-    try expect(b2[1] == 0);
-    try expect(b2[2] == 1);
-    try expect(b2.len == 3);
+    {
+        const a = try zignite.range(i32, -1, 3).toBoundedArray(10);
+        try expect(a.get(0) == -1);
+        try expect(a.get(1) == 0);
+        try expect(a.get(2) == 1);
+        try expect(a.len == 3);
+    }
 
-    try expect(zignite.range(i32, 0, 0).isEmpty());
+    {
+        try expect(zignite.range(i32, 0, 0).isEmpty());
+    }
 }
 
 pub fn Range(comptime T: type) type {

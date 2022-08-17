@@ -4,7 +4,7 @@ const ArrayList = std.ArrayList;
 const expect = std.testing.expect;
 const ReverseIndex = @import("reverse_index.zig").ReverseIndex;
 
-test "rev_array_list:" {
+test "revArrayList" {
     const allocator = std.testing.allocator;
 
     {
@@ -14,13 +14,11 @@ test "rev_array_list:" {
         try list.append(2);
         try list.append(3);
 
-        var buffer: [10]i32 = undefined;
-        const b = zignite.revArrayList(i32, &list).toSlice(&buffer).?;
-
-        try expect(b[0] == 3);
-        try expect(b[1] == 2);
-        try expect(b[2] == 1);
-        try expect(b.len == 3);
+        const a = try zignite.revArrayList(i32, &list).toBoundedArray(10);
+        try expect(a.get(0) == 3);
+        try expect(a.get(1) == 2);
+        try expect(a.get(2) == 1);
+        try expect(a.len == 3);
     }
 
     {

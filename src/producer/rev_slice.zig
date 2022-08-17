@@ -2,22 +2,26 @@ const zignite = @import("../zignite.zig");
 const expect = @import("std").testing.expect;
 const ReverseIndex = @import("Reverse_index.zig").ReverseIndex;
 
-test "rev_slice:" {
-    var buffer1: [10]u8 = undefined;
-    const b1 = zignite.revSlice(u8, "ABC").toSlice(&buffer1).?;
-    try expect(b1[0] == 'C');
-    try expect(b1[1] == 'B');
-    try expect(b1[2] == 'A');
-    try expect(b1.len == 3);
+test "revSlice" {
+    {
+        const a = try zignite.revSlice(u8, "ABC").toBoundedArray(10);
+        try expect(a.get(0) == 'C');
+        try expect(a.get(1) == 'B');
+        try expect(a.get(2) == 'A');
+        try expect(a.len == 3);
+    }
 
-    var buffer2: [10]u8 = undefined;
-    const b2 = zignite.revSlice(u8, "ABCDEF"[2..5]).toSlice(&buffer2).?;
-    try expect(b2[0] == 'E');
-    try expect(b2[1] == 'D');
-    try expect(b2[2] == 'C');
-    try expect(b2.len == 3);
+    {
+        const a = try zignite.revSlice(u8, "ABCDEF"[2..5]).toBoundedArray(10);
+        try expect(a.get(0) == 'E');
+        try expect(a.get(1) == 'D');
+        try expect(a.get(2) == 'C');
+        try expect(a.len == 3);
+    }
 
-    try expect(zignite.revSlice(u8, "").isEmpty());
+    {
+        try expect(zignite.revSlice(u8, "").isEmpty());
+    }
 }
 
 pub fn RevSlice(comptime T: type) type {

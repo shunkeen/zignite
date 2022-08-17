@@ -4,7 +4,7 @@ const AutoHashMap = std.AutoHashMap;
 const expect = std.testing.expect;
 const FromIterable = @import("from_iterable.zig").FromIterable;
 
-test "from_auto_hash_map:" {
+test "fromAutoHashMap" {
     const allocator = std.testing.allocator;
     {
         var hash_map = AutoHashMap(u32, u8).init(allocator);
@@ -13,8 +13,8 @@ test "from_auto_hash_map:" {
         try hash_map.put(98, "b"[0]);
         try hash_map.put(99, "c"[0]);
 
-        var buffer: [10]AutoHashMap(u32, u8).Entry = undefined;
-        for (zignite.fromAutoHashMap(u32, u8, &hash_map).toSlice(&buffer).?) |entry| {
+        const a = try zignite.fromAutoHashMap(u32, u8, &hash_map).toBoundedArray(10);
+        for (a.constSlice()) |entry| {
             // random order
             switch (entry.key_ptr.*) {
                 97 => try expect(entry.value_ptr.* == "a"[0]),

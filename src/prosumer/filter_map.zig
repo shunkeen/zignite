@@ -3,7 +3,7 @@ const std = @import("std");
 const expect = std.testing.expect;
 const ProsumerType = @import("prosumer_type.zig").ProsumerType;
 
-test "filter_map: parseInt" {
+test "filterMap" {
     const parseInt = struct {
         pub fn parseInt(x: []const u8) ?i32 {
             return std.fmt.parseInt(i32, x, 10) catch null;
@@ -11,14 +11,18 @@ test "filter_map: parseInt" {
     }.parseInt;
 
     const Str = []const u8;
-    var buffer1: [10]i32 = undefined;
-    const b1 = zignite.fromSlice(Str, &[_]Str{ "+1", "-two", "+three", "-4", "five" }).filterMap(i32, parseInt).toSlice(&buffer1).?;
-    try expect(b1[0] == 1);
-    try expect(b1[1] == -4);
-    try expect(b1.len == 2);
 
-    try expect(zignite.fromSlice(Str, &[_]Str{ "-two", "+three", "five" }).filterMap(i32, parseInt).isEmpty());
-    try expect(zignite.empty(Str).filterMap(i32, parseInt).isEmpty());
+    {
+        const a = try zignite.fromSlice(Str, &[_]Str{ "+1", "-two", "+three", "-4", "five" }).filterMap(i32, parseInt).toBoundedArray(10);
+        try expect(a.get(0) == 1);
+        try expect(a.get(1) == -4);
+        try expect(a.len == 2);
+    }
+
+    {
+        try expect(zignite.fromSlice(Str, &[_]Str{ "-two", "+three", "five" }).filterMap(i32, parseInt).isEmpty());
+        try expect(zignite.empty(Str).filterMap(i32, parseInt).isEmpty());
+    }
 }
 
 pub fn FilterMap(comptime S: type, comptime T: type, comptime transformer: fn (value: S) ?T) type {

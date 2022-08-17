@@ -2,12 +2,11 @@ const zignite = @import("../zignite.zig");
 const expect = @import("std").testing.expect;
 const ProducerType = @import("producer_type.zig").ProducerType;
 
-test "repeat:" {
-    var buffer: [10]u8 = undefined;
-    const b = zignite.repeat(u8, 'A').take(buffer.len).toSlice(&buffer).?;
-    try expect(b[0] == 'A');
-    try expect(b[1] == 'A');
-    try expect(b[2] == 'A');
+test "repeat" {
+    const a = try zignite.repeat(u8, 'A').take(10).toBoundedArray(10);
+    try expect(a.get(0) == 'A');
+    try expect(a.get(1) == 'A');
+    try expect(a.get(2) == 'A');
     // ...
 }
 

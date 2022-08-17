@@ -2,22 +2,25 @@ const zignite = @import("../zignite.zig");
 const expect = @import("std").testing.expect;
 const ProsumerType = @import("prosumer_type.zig").ProsumerType;
 
-test "skip:" {
-    var buffer1: [10]i32 = undefined;
-    const b1 = zignite.range(i32, 1, 5).skip(3).toSlice(&buffer1).?;
-    try expect(b1[0] == 4);
-    try expect(b1[1] == 5);
-    try expect(b1.len == 2);
+test "skip" {
+    {
+        const a = try zignite.range(i32, 1, 5).skip(3).toBoundedArray(10);
+        try expect(a.get(0) == 4);
+        try expect(a.get(1) == 5);
+        try expect(a.len == 2);
+    }
 
-    try expect(zignite.range(i32, 1, 2).skip(3).isEmpty());
+    {
+        const a = try zignite.range(i32, 1, 2).skip(0).toBoundedArray(10);
+        try expect(a.get(0) == 1);
+        try expect(a.get(1) == 2);
+        try expect(a.len == 2);
+    }
 
-    try expect(zignite.empty(i32).skip(3).isEmpty());
-
-    var buffer4: [10]i32 = undefined;
-    const b4 = zignite.range(i32, 1, 2).skip(0).toSlice(&buffer4).?;
-    try expect(b4[0] == 1);
-    try expect(b4[1] == 2);
-    try expect(b4.len == 2);
+    {
+        try expect(zignite.range(i32, 1, 2).skip(3).isEmpty());
+        try expect(zignite.empty(i32).skip(3).isEmpty());
+    }
 }
 
 pub fn Skip(comptime T: type) type {

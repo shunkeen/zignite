@@ -4,22 +4,21 @@ const BoundedArray = std.BoundedArray;
 const expect = std.testing.expect;
 const ReverseIndex = @import("reverse_index.zig").ReverseIndex;
 
-test "rev_bounded_array:" {
+test "revBoundedArray" {
     const Str10 = BoundedArray(u8, 10);
 
     {
-        const a = try Str10.fromSlice("ABC");
-        var buffer1: [10]u8 = undefined;
-        const b1 = zignite.revBoundedArray(u8, 10, &a).toSlice(&buffer1).?;
-        try expect(b1[0] == 'C');
-        try expect(b1[1] == 'B');
-        try expect(b1[2] == 'A');
-        try expect(b1.len == 3);
+        const s = try Str10.fromSlice("ABC");
+        const a = try zignite.revBoundedArray(u8, 10, &s).toBoundedArray(10);
+        try expect(a.get(0) == 'C');
+        try expect(a.get(1) == 'B');
+        try expect(a.get(2) == 'A');
+        try expect(a.len == 3);
     }
 
     {
-        const a = try Str10.init(0);
-        try expect(zignite.revBoundedArray(u8, 10, &a).isEmpty());
+        const s = try Str10.init(0);
+        try expect(zignite.revBoundedArray(u8, 10, &s).isEmpty());
     }
 }
 

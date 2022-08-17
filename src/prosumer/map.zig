@@ -2,21 +2,24 @@ const zignite = @import("../zignite.zig");
 const expect = @import("std").testing.expect;
 const ProsumerType = @import("prosumer_type.zig").ProsumerType;
 
-test "map: (2 *)" {
+test "map" {
     const double = struct {
         pub fn double(x: i32) i32 {
             return 2 * x;
         }
     }.double;
 
-    var buffer1: [10]i32 = undefined;
-    const b1 = zignite.range(i32, 1, 3).map(i32, double).toSlice(&buffer1).?;
-    try expect(b1[0] == 2);
-    try expect(b1[1] == 4);
-    try expect(b1[2] == 6);
-    try expect(b1.len == 3);
+    {
+        const a = try zignite.range(i32, 1, 3).map(i32, double).toBoundedArray(10);
+        try expect(a.get(0) == 2);
+        try expect(a.get(1) == 4);
+        try expect(a.get(2) == 6);
+        try expect(a.len == 3);
+    }
 
-    try expect(zignite.empty(i32).map(i32, double).isEmpty());
+    {
+        try expect(zignite.empty(i32).map(i32, double).isEmpty());
+    }
 }
 
 pub fn Map(comptime S: type, comptime T: type, comptime transformer: fn (value: S) T) type {

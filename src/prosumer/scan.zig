@@ -2,27 +2,29 @@ const zignite = @import("../zignite.zig");
 const expect = @import("std").testing.expect;
 const ProsumerType = @import("prosumer_type.zig").ProsumerType;
 
-test "scan: 2 *" {
+test "scan" {
     const mul = struct {
         pub fn mul(x: u32, y: u32) u32 {
             return x * y;
         }
     }.mul;
 
-    var buffer1: [10]u32 = undefined;
-    const b1 = zignite.range(u32, 1, 5).scan(u32, 2, mul).toSlice(&buffer1).?;
-    try expect(b1[0] == 2);
-    try expect(b1[1] == 2);
-    try expect(b1[2] == 4);
-    try expect(b1[3] == 12);
-    try expect(b1[4] == 48);
-    try expect(b1[5] == 240);
-    try expect(b1.len == 6);
+    {
+        const a = try zignite.range(u32, 1, 5).scan(u32, 2, mul).toBoundedArray(10);
+        try expect(a.get(0) == 2);
+        try expect(a.get(1) == 2);
+        try expect(a.get(2) == 4);
+        try expect(a.get(3) == 12);
+        try expect(a.get(4) == 48);
+        try expect(a.get(5) == 240);
+        try expect(a.len == 6);
+    }
 
-    var buffer2: [10]u32 = undefined;
-    const b2 = zignite.empty(u32).scan(u32, 2, mul).toSlice(&buffer2).?;
-    try expect(b2[0] == 2);
-    try expect(b2.len == 1);
+    {
+        const a = try zignite.empty(u32).scan(u32, 2, mul).toBoundedArray(10);
+        try expect(a.get(0) == 2);
+        try expect(a.len == 1);
+    }
 }
 
 pub fn Scan(comptime S: type, comptime T: type, reducer: fn (accumulator: S, value: T) S) type {

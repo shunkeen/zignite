@@ -4,7 +4,7 @@ const AutoArrayHashMap = std.AutoArrayHashMap;
 const expect = std.testing.expect;
 const FromIterable = @import("from_iterable.zig").FromIterable;
 
-test "from_auto_array_hash_map:" {
+test "fromAutoArrayHashMap" {
     const allocator = std.testing.allocator;
     {
         var hash_map = AutoArrayHashMap(u32, u8).init(allocator);
@@ -13,15 +13,14 @@ test "from_auto_array_hash_map:" {
         try hash_map.put(98, "b"[0]);
         try hash_map.put(99, "c"[0]);
 
-        var buffer: [10]AutoArrayHashMap(u32, u8).Entry = undefined;
-        const b = zignite.fromAutoArrayHashMap(u32, u8, &hash_map).toSlice(&buffer).?;
-        try expect(b[0].key_ptr.* == 97);
-        try expect(b[0].value_ptr.* == "a"[0]);
-        try expect(b[1].key_ptr.* == 98);
-        try expect(b[1].value_ptr.* == "b"[0]);
-        try expect(b[2].key_ptr.* == 99);
-        try expect(b[2].value_ptr.* == "c"[0]);
-        try expect(b.len == 3);
+        const a = try zignite.fromAutoArrayHashMap(u32, u8, &hash_map).toBoundedArray(10);
+        try expect(a.get(0).key_ptr.* == 97);
+        try expect(a.get(0).value_ptr.* == "a"[0]);
+        try expect(a.get(1).key_ptr.* == 98);
+        try expect(a.get(1).value_ptr.* == "b"[0]);
+        try expect(a.get(2).key_ptr.* == 99);
+        try expect(a.get(2).value_ptr.* == "c"[0]);
+        try expect(a.len == 3);
     }
 
     {

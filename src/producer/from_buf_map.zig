@@ -5,7 +5,7 @@ const BufMapHashMap = std.StringHashMap([]const u8);
 const expect = std.testing.expect;
 const FromIterable = @import("from_iterable.zig").FromIterable;
 
-test "from_buf_map:" {
+test "fromBufMap" {
     const allocator = std.testing.allocator;
     {
         var buf_map = BufMap.init(allocator);
@@ -14,8 +14,8 @@ test "from_buf_map:" {
         try buf_map.put("key2", "val2");
         try buf_map.put("key3", "val3");
 
-        var buffer: [10]BufMapHashMap.Entry = undefined;
-        for (zignite.fromBufMap(&buf_map).toSlice(&buffer).?) |entry| {
+        const a = try zignite.fromBufMap(&buf_map).toBoundedArray(10);
+        for (a.constSlice()) |entry| {
             // random order
             if (std.mem.eql(u8, entry.key_ptr.*, "key1")) {
                 try expect(std.mem.eql(u8, entry.value_ptr.*, "val1"));

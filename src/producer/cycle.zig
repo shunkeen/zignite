@@ -2,22 +2,25 @@ const zignite = @import("../zignite.zig");
 const expect = @import("std").testing.expect;
 const ProducerType = @import("../producer/producer_type.zig").ProducerType;
 
-test "cycle: {1, 2}" {
-    try expect(zignite.empty(i32).cycle().isEmpty());
+test "cycle" {
+    {
+        try expect(zignite.empty(i32).cycle().isEmpty());
+    }
 
-    var buffer2: [10]i32 = undefined;
-    const b2 = zignite.range(i32, 1, 2).cycle().take(10).toSlice(&buffer2).?;
-    try expect(b2[0] == 1);
-    try expect(b2[1] == 2);
-    try expect(b2[2] == 1);
-    try expect(b2[3] == 2);
-    try expect(b2[4] == 1);
-    try expect(b2[5] == 2);
-    try expect(b2[6] == 1);
-    try expect(b2[7] == 2);
-    try expect(b2[8] == 1);
-    try expect(b2[9] == 2);
-    // ...
+    {
+        const a = try zignite.range(i32, 1, 2).cycle().take(10).toBoundedArray(10);
+        try expect(a.get(0) == 1);
+        try expect(a.get(1) == 2);
+        try expect(a.get(2) == 1);
+        try expect(a.get(3) == 2);
+        try expect(a.get(4) == 1);
+        try expect(a.get(5) == 2);
+        try expect(a.get(6) == 1);
+        try expect(a.get(7) == 2);
+        try expect(a.get(8) == 1);
+        try expect(a.get(9) == 2);
+        // ...
+    }
 }
 
 pub fn Cycle(comptime S: type, comptime T: type, comptime pd_next: ProducerType(S, T).Next, comptime pd_deinit: ProducerType(S, T).Deinit) type {

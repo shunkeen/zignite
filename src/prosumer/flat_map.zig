@@ -3,23 +3,26 @@ const expect = @import("std").testing.expect;
 const ProducerType = @import("../producer/producer_type.zig").ProducerType;
 const ProsumerType = @import("prosumer_type.zig").ProsumerType;
 
-test "flat_map:" {
+test "flatMap" {
     const R = zignite.Range(i32);
-    const range = struct {
-        fn run(x: usize) R {
+    const r = struct {
+        fn r(x: usize) R {
             return zignite.range(i32, 1, x);
         }
-    }.run;
+    }.r;
 
-    var buffer1: [10]i32 = undefined;
-    const b1 = zignite.fromSlice(usize, &[_]usize{ 0, 1, 2 }).flatMap(R, range).toSlice(&buffer1).?;
-    try expect(b1[0] == 1);
-    try expect(b1[1] == 1);
-    try expect(b1[2] == 2);
-    try expect(b1.len == 3);
+    {
+        const a = try zignite.range(usize, 0, 3).flatMap(R, r).toBoundedArray(10);
+        try expect(a.get(0) == 1);
+        try expect(a.get(1) == 1);
+        try expect(a.get(2) == 2);
+        try expect(a.len == 3);
+    }
 
-    try expect(zignite.fromSlice(usize, &[_]usize{ 0, 0, 0 }).flatMap(R, range).isEmpty());
-    try expect(zignite.fromSlice(usize, &[_]usize{}).flatMap(R, range).isEmpty());
+    {
+        try expect(zignite.fromSlice(usize, &[_]usize{ 0, 0, 0 }).flatMap(R, r).isEmpty());
+        try expect(zignite.fromSlice(usize, &[_]usize{}).flatMap(R, r).isEmpty());
+    }
 }
 
 pub fn FlatMap(comptime S: type, comptime T: type, comptime U: type, comptime pd_next: ProducerType(T, U).Next, comptime pd_deinit: ProducerType(T, U).Deinit, comptime transformer: fn (value: S) T) type {

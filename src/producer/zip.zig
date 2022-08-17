@@ -4,33 +4,34 @@ const expect = std.testing.expect;
 const Tuple = std.meta.Tuple;
 const ProducerType = @import("../producer/producer_type.zig").ProducerType;
 
-test "zip:" {
-    const R = zignite.Range(i32);
-    const F = zignite.FromSlice(f32);
-
+test "zip" {
     const r = zignite.range(i32, 1, 2);
     const f = zignite.fromSlice(f32, &[_]f32{ 0.4, 0.8, 1.0 });
     const e = zignite.empty(u32);
 
-    var buffer1: [10]R.Zip(F).Out = undefined;
-    const b1 = r.zip(f).toSlice(&buffer1).?;
-    try expect(b1[0][0] == 1);
-    try expect(b1[0][1] == 0.4);
-    try expect(b1[1][0] == 2);
-    try expect(b1[1][1] == 0.8);
-    try expect(b1.len == 2);
+    {
+        const a = try r.zip(f).toBoundedArray(10);
+        try expect(a.get(0)[0] == 1);
+        try expect(a.get(0)[1] == 0.4);
+        try expect(a.get(1)[0] == 2);
+        try expect(a.get(1)[1] == 0.8);
+        try expect(a.len == 2);
+    }
 
-    var buffer2: [10]F.Zip(R).Out = undefined;
-    const b2 = f.zip(r).toSlice(&buffer2).?;
-    try expect(b2[0][0] == 0.4);
-    try expect(b2[0][1] == 1);
-    try expect(b2[1][0] == 0.8);
-    try expect(b2[1][1] == 2);
-    try expect(b2.len == 2);
+    {
+        const a = try f.zip(r).toBoundedArray(10);
+        try expect(a.get(0)[0] == 0.4);
+        try expect(a.get(0)[1] == 1);
+        try expect(a.get(1)[0] == 0.8);
+        try expect(a.get(1)[1] == 2);
+        try expect(a.len == 2);
+    }
 
-    try expect(r.zip(e).isEmpty());
-    try expect(e.zip(f).isEmpty());
-    try expect(e.zip(e).isEmpty());
+    {
+        try expect(r.zip(e).isEmpty());
+        try expect(e.zip(f).isEmpty());
+        try expect(e.zip(e).isEmpty());
+    }
 }
 
 pub fn Zip(comptime S: type, comptime T: type, comptime next1: ProducerType(S, T).Next, comptime deinit1: ProducerType(S, T).Deinit, comptime U: type, comptime V: type, comptime next2: ProducerType(U, V).Next, comptime deinit2: ProducerType(U, V).Deinit) type {

@@ -4,15 +4,18 @@ const expect = std.testing.expect;
 const Tuple = std.meta.Tuple;
 const ProsumerType = @import("prosumer_type.zig").ProsumerType;
 
-test "enumerate:" {
-    var buffer1: [10]zignite.FromSlice(u8).Enumerate().Out = undefined;
-    const b1 = zignite.fromSlice(u8, "ABC").enumerate().toSlice(&buffer1).?;
-    try expect(b1[0][0] == 0 and b1[0][1] == 'A');
-    try expect(b1[1][0] == 1 and b1[1][1] == 'B');
-    try expect(b1[2][0] == 2 and b1[2][1] == 'C');
-    try expect(b1.len == 3);
+test "enumerate" {
+    {
+        const a = try zignite.fromSlice(u8, "ABC").enumerate().toBoundedArray(10);
+        try expect(a.get(0)[0] == 0 and a.get(0)[1] == 'A');
+        try expect(a.get(1)[0] == 1 and a.get(1)[1] == 'B');
+        try expect(a.get(2)[0] == 2 and a.get(2)[1] == 'C');
+        try expect(a.len == 3);
+    }
 
-    try expect(zignite.empty(u8).enumerate().isEmpty());
+    {
+        try expect(zignite.empty(u8).enumerate().isEmpty());
+    }
 }
 
 pub fn Enumerate(comptime T: type) type {

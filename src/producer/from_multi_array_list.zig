@@ -4,7 +4,7 @@ const MultiArrayList = std.MultiArrayList;
 const expect = std.testing.expect;
 const ObverseIndex = @import("obverse_index.zig").ObverseIndex;
 
-test "from_multi_array_list:" {
+test "fromMultiArrayList" {
     const allocator = std.testing.allocator;
     const Foo = struct {
         a: u32,
@@ -17,13 +17,12 @@ test "from_multi_array_list:" {
         try list.append(allocator, .{ .a = 1, .b = 2 });
         try list.append(allocator, .{ .a = 3, .b = 4 });
 
-        var buffer: [10]Foo = undefined;
-        const b = zignite.fromMultiArrayList(Foo, &list).toSlice(&buffer).?;
-        try expect(b[0].a == 1);
-        try expect(b[0].b == 2);
-        try expect(b[1].a == 3);
-        try expect(b[1].b == 4);
-        try expect(b.len == 2);
+        const array = try zignite.fromMultiArrayList(Foo, &list).toBoundedArray(10);
+        try expect(array.get(0).a == 1);
+        try expect(array.get(0).b == 2);
+        try expect(array.get(1).a == 3);
+        try expect(array.get(1).b == 4);
+        try expect(array.len == 2);
     }
 
     {

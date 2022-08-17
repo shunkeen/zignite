@@ -2,21 +2,24 @@ const zignite = @import("../zignite.zig");
 const expect = @import("std").testing.expect;
 const ProsumerType = @import("prosumer_type.zig").ProsumerType;
 
-test "take_while: odd" {
+test "takeWhile" {
     const odd = struct {
         pub fn odd(x: i32) bool {
             return @mod(x, 2) == 1;
         }
     }.odd;
 
-    var buffer1: [10]i32 = undefined;
-    const b1 = zignite.fromSlice(i32, &[_]i32{ 1, 3, 4, 5, 6 }).takeWhile(odd).toSlice(&buffer1).?;
-    try expect(b1[0] == 1);
-    try expect(b1[1] == 3);
-    try expect(b1.len == 2);
+    {
+        const a = try zignite.fromSlice(i32, &[_]i32{ 1, 3, 4, 5, 6 }).takeWhile(odd).toBoundedArray(10);
+        try expect(a.get(0) == 1);
+        try expect(a.get(1) == 3);
+        try expect(a.len == 2);
+    }
 
-    try expect(zignite.range(i32, 0, 3).takeWhile(odd).isEmpty());
-    try expect(zignite.empty(i32).takeWhile(odd).isEmpty());
+    {
+        try expect(zignite.range(i32, 0, 3).takeWhile(odd).isEmpty());
+        try expect(zignite.empty(i32).takeWhile(odd).isEmpty());
+    }
 }
 
 pub fn TakeWhile(comptime T: type, comptime predicate: fn (value: T) bool) type {

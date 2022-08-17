@@ -2,32 +2,37 @@ const zignite = @import("../zignite.zig");
 const expect = @import("std").testing.expect;
 const ProducerType = @import("../producer/producer_type.zig").ProducerType;
 
-test "chain:" {
+test "chain" {
     const p_1_2 = zignite.range(i32, 1, 2);
     const p_4_8 = zignite.fromSlice(i32, &[_]i32{ 4, 8 });
     const p_emp = zignite.empty(i32);
 
-    var buffer1: [10]i32 = undefined;
-    const b1 = p_1_2.chain(p_4_8).toSlice(&buffer1).?;
-    try expect(b1[0] == 1);
-    try expect(b1[1] == 2);
-    try expect(b1[2] == 4);
-    try expect(b1[3] == 8);
-    try expect(b1.len == 4);
+    {
+        const a = try p_1_2.chain(p_4_8).toBoundedArray(10);
+        try expect(a.get(0) == 1);
+        try expect(a.get(1) == 2);
+        try expect(a.get(2) == 4);
+        try expect(a.get(3) == 8);
+        try expect(a.len == 4);
+    }
 
-    var buffer2: [10]i32 = undefined;
-    const b2 = p_1_2.chain(p_emp).toSlice(&buffer2).?;
-    try expect(b2[0] == 1);
-    try expect(b2[1] == 2);
-    try expect(b2.len == 2);
+    {
+        const a = try p_1_2.chain(p_emp).toBoundedArray(10);
+        try expect(a.get(0) == 1);
+        try expect(a.get(1) == 2);
+        try expect(a.len == 2);
+    }
 
-    var buffer3: [10]i32 = undefined;
-    const b3 = p_emp.chain(p_4_8).toSlice(&buffer3).?;
-    try expect(b3[0] == 4);
-    try expect(b3[1] == 8);
-    try expect(b3.len == 2);
+    {
+        const a = try p_emp.chain(p_4_8).toBoundedArray(10);
+        try expect(a.get(0) == 4);
+        try expect(a.get(1) == 8);
+        try expect(a.len == 2);
+    }
 
-    try expect(p_emp.chain(p_emp).isEmpty());
+    {
+        try expect(p_emp.chain(p_emp).isEmpty());
+    }
 }
 
 pub fn Chain(comptime S: type, comptime T: type, comptime next1: ProducerType(S, T).Next, comptime deinit1: ProducerType(S, T).Deinit, comptime U: type, comptime next2: ProducerType(U, T).Next, comptime deinit2: ProducerType(U, T).Deinit) type {

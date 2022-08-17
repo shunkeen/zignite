@@ -2,22 +2,25 @@ const zignite = @import("../zignite.zig");
 const expect = @import("std").testing.expect;
 const ProsumerType = @import("prosumer_type.zig").ProsumerType;
 
-test "skip_while: odd" {
+test "skipWhile" {
     const odd = struct {
         pub fn odd(x: i32) bool {
             return @mod(x, 2) == 1;
         }
     }.odd;
 
-    var buffer1: [10]i32 = undefined;
-    const b1 = zignite.fromSlice(i32, &[_]i32{ 1, 3, 4, 5, 6 }).skipWhile(odd).toSlice(&buffer1).?;
-    try expect(b1[0] == 4);
-    try expect(b1[1] == 5);
-    try expect(b1[2] == 6);
-    try expect(b1.len == 3);
+    {
+        const a = try zignite.fromSlice(i32, &[_]i32{ 1, 3, 4, 5, 6 }).skipWhile(odd).toBoundedArray(10);
+        try expect(a.get(0) == 4);
+        try expect(a.get(1) == 5);
+        try expect(a.get(2) == 6);
+        try expect(a.len == 3);
+    }
 
-    try expect(zignite.fromSlice(i32, &[_]i32{ 1, 3, 5 }).skipWhile(odd).isEmpty());
-    try expect(zignite.empty(i32).skipWhile(odd).isEmpty());
+    {
+        try expect(zignite.fromSlice(i32, &[_]i32{ 1, 3, 5 }).skipWhile(odd).isEmpty());
+        try expect(zignite.empty(i32).skipWhile(odd).isEmpty());
+    }
 }
 
 pub fn SkipWhile(comptime T: type, comptime predicate: fn (value: T) bool) type {
