@@ -4,8 +4,8 @@ A lazy stream (iterator) library for Zig.
 ## Example Code
 
 * The following code does **not** generate an intermediate collection.
-* The following code compiles to a single While statement.
-* However, removing the `sum` method only produces the initial state of the iterator, not a While statement.
+* The following code compiles to [a single loop](./src/hermit/hermit_type.zig#L31).
+* However, removing the `sum` method only produces the initial state of the iterator, not a loop.
 
 ```README.example.zig
 const zignite = @import("src/zignite.zig");
@@ -20,7 +20,7 @@ fn repeatTake(x: usize) RepeatTake {
     return zignite.repeat(usize, x).take(x);
 }
 
-test "Example Code" {
+test "Example Code 1" {
     const x = zignite
         .range(usize, 0, 100) //            { 0, 1, ..., 99 }
         .filter(even) //                    { 0, 2, ..., 98 }
@@ -28,6 +28,21 @@ test "Example Code" {
         .sum();
 
     try std.testing.expect(x == 161700);
+}
+```
+
+* The `lazy` in the following code can be reused without resetting.
+* However, in this case `lazy` is calculated twice.
+* This is because no collection is created to store intermediate results.
+
+```README.example.zig
+test "Example Code 2" {
+    const lazy = zignite
+        .range(usize, 1, 10) // { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }
+        .filter(even); //     { 2, 4, 6, 8, 10 }
+
+    try std.testing.expect(lazy.sum() == 30);
+    try std.testing.expect(lazy.product() == 3840);
 }
 ```
 

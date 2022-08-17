@@ -10,7 +10,7 @@ fn repeatTake(x: usize) RepeatTake {
     return zignite.repeat(usize, x).take(x);
 }
 
-test "Example Code" {
+test "Example Code 1" {
     const x = zignite
         .range(usize, 0, 100) //            { 0, 1, ..., 99 }
         .filter(even) //                    { 0, 2, ..., 98 }
@@ -18,4 +18,13 @@ test "Example Code" {
         .sum();
 
     try std.testing.expect(x == 161700);
+}
+
+test "Example Code 2" {
+    const lazy = zignite
+        .range(usize, 1, 10) // { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }
+        .filter(even); //     { 2, 4, 6, 8, 10 }
+
+    try std.testing.expect(lazy.sum() == 30);
+    try std.testing.expect(lazy.product() == 3840);
 }
