@@ -39,10 +39,32 @@ test "Example Code 1" {
 test "Example Code 2" {
     const lazy = zignite
         .range(usize, 1, 10) // { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }
-        .filter(even); //     { 2, 4, 6, 8, 10 }
+        .filter(even); //       { 2, 4, 6, 8, 10 }
 
     try std.testing.expect(lazy.sum() == 30);
     try std.testing.expect(lazy.product() == 3840);
+}
+```
+
+* You can convert between some standard collections like the following code.
+
+```
+test "Example Code 3" {
+    const allocator = std.testing.allocator;
+    const slice = "Example Code 3";
+
+    // []const u8 -> BoundedArray(u8, 50)
+    const bounded_array = try zignite.fromSlice(u8, slice).toBoundedArray(50);
+
+    // BoundedArray(u8, 50) -> ArrayList(u8)
+    var array_list = try zignite.fromBoundedArray(u8, 50, &bounded_array).toArrayList(allocator);
+    defer array_list.deinit();
+
+    // ArrayList(u8) -> []const u8
+    var buffer: [50]u8 = undefined;
+    const slice2 = zignite.fromArrayList(u8, &array_list).toSlice(&buffer).?;
+
+    try std.testing.expect(std.mem.eql(u8, slice, slice2));
 }
 ```
 
