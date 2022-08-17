@@ -3,6 +3,7 @@ const Allocator = std.mem.Allocator;
 const ArrayList = std.ArrayList;
 const AutoArrayHashMap = std.AutoArrayHashMap;
 const AutoHashMap = std.AutoHashMap;
+const BoundedArray = std.BoundedArray;
 const BufMap = std.BufMap;
 const MultiArrayList = std.MultiArrayList;
 const Order = std.math.Order;
@@ -18,6 +19,7 @@ const _Empty = @import("./producer/empty.zig").Empty;
 const _FromArrayList = @import("./producer/from_array_list.zig").FromArrayList;
 const _FromAutoArrayHashMap = @import("./producer/from_auto_array_hash_map.zig").FromAutoArrayHashMap;
 const _FromAutoHashMap = @import("./producer/from_auto_hash_map.zig").FromAutoHashMap;
+const _FromBoundedArray = @import("./producer/from_bounded_array.zig").FromBoundedArray;
 const _FromBufMap = @import("./producer/from_buf_map.zig").FromBufMap;
 const _FromMultiArrayList = @import("./producer/from_multi_array_list.zig").FromMultiArrayList;
 const _FromSlice = @import("./producer/from_slice.zig").FromSlice;
@@ -104,6 +106,14 @@ pub fn FromAutoHashMap(comptime S: type, comptime T: type) type {
 
 pub inline fn fromAutoHashMap(comptime S: type, comptime T: type, hash_map: *const AutoHashMap(S, T)) FromAutoHashMap(S, T) {
     return .{ .producer = _FromAutoHashMap(S, T).init(hash_map) };
+}
+
+pub fn FromBoundedArray(comptime T: type, comptime capacity: usize) type {
+    return Zignite(_FromBoundedArray(T, capacity));
+}
+
+pub inline fn fromBoundedArray(comptime T: type, comptime capacity: usize, list: *const BoundedArray(T, capacity)) FromBoundedArray(T, capacity) {
+    return .{ .producer = _FromBoundedArray(T, capacity).init(list) };
 }
 
 pub const FromBufMap = Zignite(_FromBufMap);

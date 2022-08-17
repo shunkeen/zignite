@@ -41,6 +41,7 @@ test "Example Code" {
 * [fromArrayList](./src/producer/from_array_list.zig)
 * [fromAutoArrayHashMap](./src/producer/from_auto_array_hash_map.zig)
 * [fromAutoHashMap](./src/producer/from_auto_hash_map.zig)
+* [fromBoundedArray](./src/producer/from_bounded_array.zig)
 * [fromBufMap](./src/producer/from_buf_map.zig)
 * [fromMultiArrayList](./src/producer/from_multi_array_list.zig)
 * [fromSlice](./src/producer/from_slice.zig)
