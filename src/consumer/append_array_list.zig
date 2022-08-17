@@ -3,7 +3,7 @@ const std = @import("std");
 const ArrayList = std.ArrayList;
 const Allocator = std.mem.Allocator;
 const expect = std.testing.expect;
-const ConsumerType = @import("consumer_type.zig").ConsumerType;
+const TrySet = @import("try_set.zig").TrySet;
 
 test "append_array_list:" {
     const allocator = std.testing.allocator;
@@ -26,32 +26,9 @@ test "append_array_list:" {
 }
 
 pub fn AppendArrayList(comptime T: type) type {
-    return struct {
-        list: *ArrayList(T),
-
-        pub const Type = ConsumerType(T, @This(), Allocator.Error!void);
-
-        pub inline fn init(list: *ArrayList(T)) Type.State {
-            return .{ .list = list };
+    return TrySet(T, *ArrayList(T), Allocator.Error, struct {
+        fn set(list: *ArrayList(T), value: T) Allocator.Error!void {
+            try list.append(value);
         }
-
-        pub fn next(event: Type.Event) Type.Action {
-            const l = event.state.list;
-            return switch (event.tag) {
-                ._continue => Type.Action._await(init(l)),
-                ._break => Type.Action._return(init(l), {}),
-                ._yield => |v| await_or_throw(l, v),
-            };
-        }
-
-        pub const deinit = Type.nop;
-
-        inline fn await_or_throw(list: *ArrayList(T), value: T) Type.Action {
-            if (list.append(value)) |_| {
-                return Type.Action._await(init(list));
-            } else |err| {
-                return Type.Action._return(init(list), err);
-            }
-        }
-    };
+    }.set);
 }

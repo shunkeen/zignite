@@ -3,7 +3,7 @@ const std = @import("std");
 const AutoHashMap = std.AutoHashMap;
 const Allocator = std.mem.Allocator;
 const expect = std.testing.expect;
-const ConsumerType = @import("consumer_type.zig").ConsumerType;
+const TrySet = @import("try_set.zig").TrySet;
 
 test "put_auto_hash_map:" {
     const allocator = std.testing.allocator;
@@ -32,32 +32,9 @@ test "put_auto_hash_map:" {
 }
 
 pub fn PutAutoHashMap(comptime S: type, comptime T: type, comptime U: type) type {
-    return struct {
-        hash_map: *AutoHashMap(T, U),
-
-        pub const Type = ConsumerType(S, @This(), Allocator.Error!void);
-
-        pub inline fn init(hash_map: *AutoHashMap(T, U)) Type.State {
-            return .{ .hash_map = hash_map };
+    return TrySet(S, *AutoHashMap(T, U), Allocator.Error, struct {
+        fn set(hash_map: *AutoHashMap(T, U), value: S) Allocator.Error!void {
+            try hash_map.put(value[0], value[1]);
         }
-
-        pub fn next(event: Type.Event) Type.Action {
-            const h = event.state.hash_map;
-            return switch (event.tag) {
-                ._continue => Type.Action._await(init(h)),
-                ._break => Type.Action._return(init(h), {}),
-                ._yield => |v| await_or_throw(h, v),
-            };
-        }
-
-        pub const deinit = Type.nop;
-
-        inline fn await_or_throw(hash_map: *AutoHashMap(T, U), value: S) Type.Action {
-            if (hash_map.put(value[0], value[1])) |_| {
-                return Type.Action._await(init(hash_map));
-            } else |err| {
-                return Type.Action._return(init(hash_map), err);
-            }
-        }
-    };
+    }.set);
 }

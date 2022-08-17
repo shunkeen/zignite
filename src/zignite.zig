@@ -452,23 +452,15 @@ pub fn Zignite(comptime Producer: type) type {
         pub inline fn toArrayList(self: Self, allocator: Allocator) Allocator.Error!ArrayList(Out) {
             var list = ArrayList(Out).init(allocator);
             errdefer list.deinit();
-            if (self.bomb(_AppendArrayList(Out).init(&list))) |_| {
-                return list;
-            } else |err| {
-                list.deinit();
-                return err;
-            }
+            try self.bomb(_AppendArrayList(Out).init(&list));
+            return list;
         }
 
         pub inline fn toAutoArrayHashMap(self: Self, comptime T: type, comptime U: type, allocator: Allocator) Allocator.Error!AutoArrayHashMap(T, U) {
             var hash_map = AutoArrayHashMap(T, U).init(allocator);
             errdefer hash_map.deinit();
-            if (self.bomb(_PutAutoArrayHashMap(Out, T, U).init(&hash_map))) |_| {
-                return hash_map;
-            } else |err| {
-                hash_map.deinit();
-                return err;
-            }
+            try self.bomb(_PutAutoArrayHashMap(Out, T, U).init(&hash_map));
+            return hash_map;
         }
 
         pub inline fn toAutoHashMap(self: Self, comptime T: type, comptime U: type, allocator: Allocator) Allocator.Error!AutoHashMap(T, U) {
@@ -485,26 +477,18 @@ pub fn Zignite(comptime Producer: type) type {
         pub inline fn toBufMap(self: Self, allocator: Allocator) Allocator.Error!BufMap {
             var buf_map = BufMap.init(allocator);
             errdefer buf_map.deinit();
-            if (self.bomb(_PutBufMap(Out).init(&buf_map))) |_| {
-                return buf_map;
-            } else |err| {
-                buf_map.deinit();
-                return err;
-            }
+            try self.bomb(_PutBufMap(Out).init(&buf_map));
+            return buf_map;
         }
 
         pub inline fn toMultiArrayList(self: Self, allocator: Allocator) Allocator.Error!MultiArrayList(Out) {
             var list = MultiArrayList(Out){};
             errdefer list.deinit(allocator);
-            if (self.bomb(_AppendMultiArrayList(Out).init(&list, allocator))) |_| {
-                return list;
-            } else |err| {
-                list.deinit(allocator);
-                return err;
-            }
+            try self.bomb(_AppendMultiArrayList(Out).init(&list, allocator));
+            return list;
         }
 
-        pub inline fn toSlice(self: Self, buffer: []Out) ?[]const Out {
+        pub inline fn toSlice(self: Self, buffer: []Out) Overflow![]const Out {
             return self.bomb(_ToSlice(Out).init(buffer));
         }
 

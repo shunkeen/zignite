@@ -3,7 +3,7 @@ const std = @import("std");
 const MultiArrayList = std.MultiArrayList;
 const Allocator = std.mem.Allocator;
 const expect = std.testing.expect;
-const ConsumerType = @import("consumer_type.zig").ConsumerType;
+const TrySet = @import("try_set.zig").TrySet;
 
 test "append_multi_array_list:" {
     const Foo = struct {
@@ -38,30 +38,17 @@ pub fn AppendMultiArrayList(comptime T: type) type {
         list: *MultiArrayList(T),
         allocator: Allocator,
 
-        pub const Type = ConsumerType(T, @This(), Allocator.Error!void);
-
-        pub inline fn init(list: *MultiArrayList(T), allocator: Allocator) Type.State {
-            return .{ .list = list, .allocator = allocator };
+        const Cs = TrySet(T, @This(), Allocator.Error, set);
+        fn set(state: @This(), value: T) Allocator.Error!void {
+            try state.list.append(state.allocator, value);
         }
 
-        pub fn next(event: Type.Event) Type.Action {
-            const l = event.state.list;
-            const a = event.state.allocator;
-            return switch (event.tag) {
-                ._continue => Type.Action._await(init(l, a)),
-                ._break => Type.Action._return(init(l, a), {}),
-                ._yield => |v| await_or_throw(l, a, v),
-            };
-        }
+        pub const Type = Cs.Type;
+        pub const next = Cs.next;
+        pub const deinit = Cs.deinit;
 
-        pub const deinit = Type.nop;
-
-        inline fn await_or_throw(list: *MultiArrayList(T), allocator: Allocator, value: T) Type.Action {
-            if (list.append(allocator, value)) |_| {
-                return Type.Action._await(init(list, allocator));
-            } else |err| {
-                return Type.Action._return(init(list, allocator), err);
-            }
+        pub inline fn init(list: *MultiArrayList(T), allocator: Allocator) Cs {
+            return Cs.init(.{ .list = list, .allocator = allocator });
         }
     };
 }

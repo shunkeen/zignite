@@ -3,7 +3,7 @@ const std = @import("std");
 const BufMap = std.BufMap;
 const Allocator = std.mem.Allocator;
 const expect = std.testing.expect;
-const ConsumerType = @import("consumer_type.zig").ConsumerType;
+const TrySet = @import("try_set.zig").TrySet;
 
 test "put_buf_map:" {
     const allocator = std.testing.allocator;
@@ -33,32 +33,9 @@ test "put_buf_map:" {
 }
 
 pub fn PutBufMap(comptime T: type) type {
-    return struct {
-        buf_map: *BufMap,
-
-        pub const Type = ConsumerType(T, @This(), Allocator.Error!void);
-
-        pub inline fn init(buf_map: *BufMap) Type.State {
-            return .{ .buf_map = buf_map };
+    return TrySet(T, *BufMap, Allocator.Error, struct {
+        fn set(buf_map: *BufMap, value: T) Allocator.Error!void {
+            try buf_map.put(value[0], value[1]);
         }
-
-        pub fn next(event: Type.Event) Type.Action {
-            const b = event.state.buf_map;
-            return switch (event.tag) {
-                ._continue => Type.Action._await(init(b)),
-                ._break => Type.Action._return(init(b), {}),
-                ._yield => |v| await_or_throw(b, v),
-            };
-        }
-
-        pub const deinit = Type.nop;
-
-        inline fn await_or_throw(buf_map: *BufMap, value: T) Type.Action {
-            if (buf_map.put(value[0], value[1])) |_| {
-                return Type.Action._await(init(buf_map));
-            } else |err| {
-                return Type.Action._return(init(buf_map), err);
-            }
-        }
-    };
+    }.set);
 }
