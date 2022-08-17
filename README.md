@@ -48,7 +48,7 @@ test "Example Code 2" {
 
 * You can convert between some standard collections like the following code.
 
-```
+```README.example.zig
 test "Example Code 3" {
     const allocator = std.testing.allocator;
     const slice = "Example Code 3";
