@@ -27,7 +27,7 @@ pub fn HermitType(comptime S: type, comptime T: type) type {
         pub inline fn run(state: State, comptime next: Next, comptime deinit: Deinit) Out {
             var a = Action._continue(state);
             defer deinit(a.state);
-            const a_i = .{ .modifier = .always_inline };
+            const a_i = .always_inline;
             while (a.value == null) a = @call(a_i, next, .{a.state});
             return a.value.?;
         }

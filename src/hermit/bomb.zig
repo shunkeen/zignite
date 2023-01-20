@@ -49,11 +49,11 @@ pub fn Bomb(comptime R: type, comptime S: type, comptime pd_next: ProducerType(R
         }
 
         inline fn pd_n(pd_event: Pd.Event) Pd.Action {
-            return @call(.{ .modifier = .always_inline }, pd_next, .{pd_event});
+            return @call(.always_inline, pd_next, .{pd_event});
         }
 
         inline fn cs_n(cs_event: Cs.Event) Cs.Action {
-            return @call(.{ .modifier = .always_inline }, cs_next, .{cs_event});
+            return @call(.always_inline, cs_next, .{cs_event});
         }
 
         inline fn _init(pd_action: Pd.Action, cs_action: Cs.Action) Type.State {
