@@ -20,7 +20,8 @@ pub fn FromIterable(comptime S: type, comptime T: type, comptime U: type) type {
                     return Type.Action._break(_init(i, null));
                 }
             } else {
-                return Type.Action._continue(_init(i, &i.iterator()));
+                var it = i.iterator();
+                return Type.Action._continue(_init(i, &it));
             }
         }
 

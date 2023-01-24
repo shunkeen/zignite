@@ -196,12 +196,12 @@ pub inline fn revSlice(comptime T: type, slice: []const T) RevSlice(T) {
     return .{ .producer = _RevSlice(T).init(slice) };
 }
 
-pub fn Zignite(comptime Producer: type) type {
+pub fn Zignite(comptime TProducer: type) type {
     return struct {
         producer: Producer,
 
         const Self = @This();
-        pub const Producer = Producer;
+        pub const Producer = TProducer;
         pub const Type = Producer.Type;
         pub const State = Producer.Type.State;
         pub const Out = Producer.Type.Out;

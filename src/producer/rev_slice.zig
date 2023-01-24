@@ -1,6 +1,6 @@
 const zignite = @import("../zignite.zig");
 const expect = @import("std").testing.expect;
-const ReverseIndex = @import("Reverse_index.zig").ReverseIndex;
+const ReverseIndex = @import("reverse_index.zig").ReverseIndex;
 
 test "revSlice" {
     {

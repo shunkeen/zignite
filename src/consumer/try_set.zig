@@ -31,7 +31,7 @@ pub fn TrySet(comptime R: type, comptime S: type, comptime T: type, comptime set
         }
 
         inline fn _set(state: S, value: R) T!void {
-            return @call(.{ .modifier = .always_inline }, set, .{ state, value });
+            return @call(.always_inline, set, .{ state, value });
         }
     };
 }
